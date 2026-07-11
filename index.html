@@ -3,793 +3,313 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>数控车床代码大师 - CNC Lathe Code Master</title>
+<title>数控车间闯关 · K2000GtC V2 编程学习游戏</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700;900&display=swap');
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #0a0e17;
-    --panel: #111827;
-    --border: #1e3a5f;
-    --accent: #00d4ff;
-    --accent2: #ff6b35;
-    --success: #00e676;
-    --warn: #ffd600;
-    --danger: #ff1744;
-    --text: #e0e7f0;
-    --text2: #8899b4;
-    --card: #1a2332;
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330;
+    --line:#2b3444; --txt:#e6edf3; --muted:#8b98a9;
+    --accent:#00d1b2; --accent2:#3fa7ff; --gold:#ffce54;
+    --ok:#2ecc71; --bad:#ff5d5d;
   }
-  body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%,#13233a 0%,var(--bg) 55%);
+    color:var(--txt); min-height:100vh; display:flex; justify-content:center;
+    padding:18px;
   }
-  #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-  .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle var(--dur) ease-in-out infinite; }
-  @keyframes twinkle { 0%,100%{opacity:.3} 50%{opacity:1} }
+  .app{width:100%;max-width:720px}
+  header{text-align:center;margin-bottom:14px}
+  header h1{font-size:22px;letter-spacing:1px}
+  header p{color:var(--muted);font-size:13px;margin-top:4px}
+  .card{
+    background:linear-gradient(180deg,var(--panel) 0%,var(--panel2) 100%);
+    border:1px solid var(--line); border-radius:16px; padding:20px;
+    box-shadow:0 12px 40px rgba(0,0,0,.4);
+  }
+  /* 进度机床 */
+  .machine{margin:0 0 16px}
+  .machine .bartop{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+  .track{position:relative;height:26px;background:#0a0e14;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .fill{position:absolute;left:0;top:0;bottom:0;width:0;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width .5s ease;border-radius:20px}
+  .tool{position:absolute;top:-9px;font-size:20px;transition:left .5s ease;transform:translateX(-50%)}
+  .levels-row{display:flex;justify-content:space-between;margin-top:10px;gap:4px}
+  .lv-dot{flex:1;text-align:center;font-size:11px;color:var(--muted);padding:6px 2px;border-radius:8px;border:1px solid transparent}
+  .lv-dot.active{color:var(--accent);border-color:var(--accent);background:rgba(0,209,178,.08)}
+  .lv-dot.done{color:var(--ok)}
+  .lv-dot .ic{font-size:16px;display:block}
 
-  header {
-    position: relative; z-index: 10;
-    background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 100%);
-    border-bottom: 2px solid var(--border);
-    padding: 20px 30px;
-    display: flex; align-items: center; gap: 20px;
-    flex-wrap: wrap;
-  }
-  header h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 20px; font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), #7b2ff7);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    letter-spacing: 2px;
-  }
-  header .subtitle {
-    font-size: 12px; color: var(--text2);
-    letter-spacing: 4px; text-transform: uppercase;
-  }
-  .nav-tabs {
-    display: flex; gap: 4px; margin-left: auto;
-    background: rgba(255,255,255,.05); border-radius: 12px; padding: 4px;
-  }
-  .nav-tab {
-    padding: 8px 18px; border: none; border-radius: 8px;
-    background: transparent; color: var(--text2);
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 13px; cursor: pointer; transition: all .25s;
-    position: relative;
-  }
-  .nav-tab:hover { color: var(--text); background: rgba(255,255,255,.05); }
-  .nav-tab.active { background: var(--accent); color: #000; font-weight: 700; }
-  .nav-tab .badge {
-    position: absolute; top: -6px; right: -6px;
-    background: var(--accent2); color: #fff;
-    font-size: 10px; border-radius: 10px; padding: 1px 6px;
-    font-weight: 700;
-  }
+  h2.title{font-size:18px;margin-bottom:4px}
+  .sub{color:var(--accent2);font-size:12px;margin-bottom:14px}
+  .intro{background:#0f1621;border-left:3px solid var(--accent);padding:12px 14px;border-radius:8px;color:#c7d1de;font-size:14px;line-height:1.6;margin-bottom:18px}
 
-  .container {
-    position: relative; z-index: 10;
-    max-width: 1200px; margin: 0 auto; padding: 20px;
+  .q{font-size:16px;line-height:1.6;margin-bottom:16px;font-weight:600}
+  .q .qnum{color:var(--gold);margin-right:6px}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{
+    display:flex;align-items:center;gap:10px;background:#0f1621;border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;cursor:pointer;font-size:15px;transition:.15s;
   }
-  .panel { display: none; }
-  .panel.active { display: block; animation: fadeIn .3s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .opt:hover{border-color:var(--accent2);background:#12203a}
+  .opt .tag{width:24px;height:24px;flex:none;border-radius:6px;background:#222c3a;display:grid;place-items:center;font-size:13px;color:var(--muted)}
+  .opt.correct{border-color:var(--ok);background:rgba(46,204,113,.12)}
+  .opt.correct .tag{background:var(--ok);color:#04210f}
+  .opt.wrong{border-color:var(--bad);background:rgba(255,93,93,.12)}
+  .opt.wrong .tag{background:var(--bad);color:#2a0606}
+  .opt.disabled{pointer-events:none;opacity:.85}
 
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 20px; margin-bottom: 16px;
-    transition: all .3s;
-  }
-  .card:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(0,212,255,.1); }
-  .card-header {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 12px;
-  }
-  .card-header h3 { font-size: 16px; font-weight: 700; }
-  .tag-sm { padding: 1px 6px; font-size: 11px; border-radius: 4px; }
-  .tag-g { background: #7b2ff7; color: #fff; }
-  .tag-m { background: var(--accent2); color: #fff; }
-  .tag-other { background: var(--success); color: #000; }
+  .exp{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.6;display:none}
+  .exp.show{display:block}
+  .exp.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.4)}
+  .exp.no{background:rgba(255,93,93,.1);border:1px solid rgba(255,93,93,.4)}
+  .exp b{color:var(--gold)}
 
-  .search-bar {
-    display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+  .footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+  .stat{font-size:13px;color:var(--muted)}
+  .stat b{color:var(--txt)}
+  button.btn{
+    background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04210f;border:none;
+    padding:11px 22px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;
   }
-  .search-bar input {
-    flex: 1; min-width: 200px;
-    padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border);
-    background: var(--card); color: var(--text);
-    font-family: 'Noto Sans SC', sans-serif; font-size: 14px;
-    outline: none; transition: all .25s;
-  }
-  .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,212,255,.15); }
-  .search-bar input::placeholder { color: var(--text2); }
-  .filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-  .filter-btn {
-    padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px;
-    background: transparent; color: var(--text2);
-    font-family: 'Noto Sans SC', sans-serif; font-size: 13px;
-    cursor: pointer; transition: all .2s;
-  }
-  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+  button.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  button.btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
 
-  .code-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 14px;
+  /* 关卡完成 / 结算 */
+  .center{text-align:center;padding:10px 0}
+  .big{font-size:46px;margin:8px 0}
+  .center h2{font-size:22px;margin-bottom:8px}
+  .center p{color:var(--muted);line-height:1.7;margin-bottom:6px}
+  .score-badge{display:inline-block;background:#0f1621;border:1px solid var(--gold);color:var(--gold);
+    padding:8px 18px;border-radius:30px;font-size:18px;font-weight:700;margin:12px 0}
+  .rank{font-size:20px;color:var(--accent);font-weight:700;margin:10px 0}
+  .hidden{display:none}
+  @media(max-width:520px){
+    .lv-dot span.nm{display:none}
+    header h1{font-size:18px}
   }
-  .code-item {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px; cursor: pointer;
-    transition: all .25s;
-  }
-  .code-item:hover {
-    border-color: var(--accent); transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,212,255,.12);
-  }
-  .code-item .code { font-family: 'Orbitron', monospace; font-size: 22px; font-weight: 900; }
-  .code-item .code-name { font-size: 14px; font-weight: 700; margin: 4px 0 6px; }
-  .code-item .code-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
-  .code-item .code-format {
-    font-family: monospace; font-size: 11px; color: var(--warn);
-    margin-top: 8px; padding: 4px 8px; background: rgba(255,214,0,.08); border-radius: 4px;
-    display: inline-block;
-  }
-
-  .quiz-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
-  }
-  .quiz-stats { display: flex; gap: 20px; align-items: center; }
-  .quiz-stat { text-align: center; }
-  .quiz-stat .num {
-    font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900;
-    color: var(--accent);
-  }
-  .quiz-stat .label { font-size: 11px; color: var(--text2); }
-
-  .quiz-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 16px; padding: 30px; text-align: center;
-    min-height: 280px; display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-  }
-  .quiz-card .question-label {
-    font-size: 12px; color: var(--text2); letter-spacing: 2px;
-    margin-bottom: 8px;
-  }
-  .quiz-card .question-code {
-    font-family: 'Orbitron', monospace; font-size: 48px; font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), #7b2ff7);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 8px;
-  }
-  .quiz-card .question-text {
-    font-size: 18px; font-weight: 700; margin-bottom: 4px;
-  }
-  .quiz-card .question-hint {
-    font-size: 13px; color: var(--text2); margin-bottom: 20px;
-  }
-  .quiz-options {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    max-width: 600px; margin: 0 auto;
-  }
-  .quiz-option {
-    padding: 14px 20px; border: 2px solid var(--border); border-radius: 12px;
-    background: transparent; color: var(--text);
-    font-family: 'Noto Sans SC', sans-serif; font-size: 14px;
-    cursor: pointer; transition: all .2s;
-  }
-  .quiz-option:hover:not(.disabled) { border-color: var(--accent); background: rgba(0,212,255,.08); }
-  .quiz-option.correct { border-color: var(--success) !important; background: rgba(0,230,118,.12) !important; color: var(--success) !important; }
-  .quiz-option.wrong { border-color: var(--danger) !important; background: rgba(255,23,68,.12) !important; color: var(--danger) !important; }
-  .quiz-option.disabled { cursor: default; opacity: .7; }
-  .quiz-feedback {
-    margin-top: 16px; padding: 10px; border-radius: 8px;
-    font-size: 14px;
-  }
-  .quiz-feedback.correct { background: rgba(0,230,118,.1); color: var(--success); }
-  .quiz-feedback.wrong { background: rgba(255,23,68,.1); color: var(--danger); }
-  .quiz-next-btn, .restart-btn {
-    margin-top: 16px; padding: 12px 32px;
-    border: none; border-radius: 10px;
-    font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: all .25s;
-  }
-  .quiz-next-btn { background: var(--accent); color: #000; }
-  .quiz-next-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,212,255,.3); }
-  .restart-btn { background: var(--accent2); color: #fff; }
-  .restart-btn:hover { transform: scale(1.05); }
-
-  .streak-bar {
-    display: flex; gap: 4px; justify-content: center; margin: 10px 0;
-  }
-  .streak-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: var(--border); transition: all .3s;
-  }
-  .streak-dot.lit { background: var(--warn); box-shadow: 0 0 8px rgba(255,214,0,.5); }
-
-  .match-container {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-    min-height: 400px;
-  }
-  .match-column { display: flex; flex-direction: column; gap: 10px; }
-  .match-column h3 {
-    text-align: center; font-size: 14px; color: var(--text2);
-    letter-spacing: 2px; margin-bottom: 8px;
-  }
-  .match-card {
-    padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px;
-    background: var(--card); cursor: pointer; transition: all .2s;
-    text-align: center; font-size: 14px;
-    user-select: none;
-  }
-  .match-card:hover:not(.matched) { border-color: var(--accent); background: rgba(0,212,255,.08); }
-  .match-card.selected { border-color: var(--warn) !important; background: rgba(255,214,0,.15) !important; }
-  .match-card.matched { border-color: var(--success) !important; background: rgba(0,230,118,.1) !important; opacity: .5; cursor: default; }
-  .match-card.wrong { border-color: var(--danger) !important; background: rgba(255,23,68,.1) !important; }
-  .match-code { font-family: 'Orbitron', monospace; font-weight: 700; letter-spacing: 1px; }
-  .match-desc { font-size: 13px; color: var(--text2); }
-  .match-progress {
-    text-align: center; margin-bottom: 16px;
-    font-size: 14px; color: var(--text2);
-  }
-  .match-progress strong { color: var(--accent); font-family: 'Orbitron', monospace; }
-
-  .modal-overlay {
-    display: none; position: fixed; inset: 0; z-index: 100;
-    background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
-    justify-content: center; align-items: center;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal {
-    background: var(--panel); border: 1px solid var(--border);
-    border-radius: 20px; padding: 30px; max-width: 500px; width: 90%;
-    animation: fadeIn .3s ease;
-  }
-  .modal h2 { text-align: center; margin-bottom: 16px; font-size: 22px; }
-  .modal p { color: var(--text2); line-height: 1.8; margin-bottom: 8px; }
-  .modal .modal-code {
-    font-family: 'Orbitron', monospace; font-size: 32px; font-weight: 900;
-    text-align: center; margin: 16px 0;
-    background: linear-gradient(135deg, var(--accent), #7b2ff7);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .modal-close {
-    display: block; margin: 16px auto 0;
-    padding: 10px 28px; border: none; border-radius: 8px;
-    background: var(--accent); color: #000;
-    font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: all .2s;
-  }
-  .modal-close:hover { transform: scale(1.05); }
-
-  @media (max-width: 700px) {
-    header { padding: 14px 16px; }
-    header h1 { font-size: 16px; }
-    .nav-tabs { margin-left: 0; width: 100%; }
-    .nav-tab { flex: 1; text-align: center; font-size: 12px; padding: 6px 10px; }
-    .code-grid { grid-template-columns: 1fr; }
-    .quiz-options { grid-template-columns: 1fr; }
-    .match-container { grid-template-columns: 1fr; }
-    .quiz-card .question-code { font-size: 32px; }
-  }
-  .section-title {
-    font-size: 18px; font-weight: 700; margin-bottom: 16px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section-title span { font-size: 24px; }
-  .progress-bar {
-    height: 4px; background: var(--border); border-radius: 2px;
-    margin: 8px 0; overflow: hidden;
-  }
-  .progress-bar-inner {
-    height: 100%; background: var(--accent); transition: width .5s ease;
-    border-radius: 2px;
-  }
-  .result-screen { text-align: center; padding: 40px 20px; }
-  .result-screen .big-score {
-    font-family: 'Orbitron', monospace; font-size: 72px; font-weight: 900;
-    background: linear-gradient(135deg, var(--accent), #7b2ff7, var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .result-screen .grade { font-size: 24px; margin: 8px 0; }
-  .result-details {
-    display: flex; justify-content: center; gap: 30px; margin: 20px 0;
-    flex-wrap: wrap;
-  }
-  .result-detail { text-align: center; }
-  .result-detail .num { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 700; }
-  .result-detail .label { font-size: 12px; color: var(--text2); }
-  .result-detail .num.green { color: var(--success); }
-  .result-detail .num.red { color: var(--danger); }
 </style>
 </head>
 <body>
-<div id="stars"></div>
+<div class="app">
+  <header>
+    <h1>🏭 数控车间闯关</h1>
+    <p>基于《K2000GtC V2 编程手册》· 边玩边学 CNC 编程</p>
+  </header>
 
-<header>
-  <div>
-    <h1>⛭ CNC MASTER</h1>
-    <div class="subtitle">数控车床代码学习游戏</div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" data-tab="library">📚 代码库</button>
-    <button class="nav-tab" data-tab="quiz">🎯 答题闯关</button>
-    <button class="nav-tab" data-tab="match">♤ 速配挑战</button>
-  </div>
-</header>
-
-<div class="container">
-
-<!-- ====== LIBRARY PANEL ====== -->
-<div class="panel active" id="panel-library">
   <div class="card">
-    <div class="section-title"><span>📖</span> 数控车床代码大全</div>
-    <p style="color:var(--text2);font-size:13px;margin-bottom:16px;">
-      G代码控制运动方式，M代码控制辅助功能。点击任意代码查看详细说明。
-    </p>
-    <div class="search-bar">
-      <input type="text" id="codeSearch" placeholder="🔍 搜索代码或描述..." />
-      <div class="filter-btns">
-        <button class="filter-btn active" data-filter="all">全部</button>
-        <button class="filter-btn" data-filter="G">G代码</button>
-        <button class="filter-btn" data-filter="M">M代码</button>
-        <button class="filter-btn" data-filter="other">其他</button>
+    <!-- 进度机床 -->
+    <div class="machine">
+      <div class="bartop"><span>加工进度</span><span id="progTxt">0%</span></div>
+      <div class="track">
+        <div class="fill" id="fill"></div>
+        <div class="tool" id="tool" style="left:0%">🔧</div>
       </div>
+      <div class="levels-row" id="lvRow"></div>
     </div>
-  </div>
-  <div class="code-grid" id="codeGrid"></div>
-</div>
 
-<!-- ====== QUIZ PANEL ====== -->
-<div class="panel" id="panel-quiz">
-  <div class="card">
-    <div class="quiz-header">
-      <div>
-        <div class="section-title" style="margin-bottom:0"><span>🎯</span> 答题闯关</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:4px;" id="quizLevelInfo">关卡 1 · 入门</div>
-      </div>
-      <div class="quiz-stats">
-        <div class="quiz-stat">
-          <div class="num" id="quizScore">0</div>
-          <div class="label">得分</div>
-        </div>
-        <div class="quiz-stat">
-          <div class="num" id="quizStreakNum" style="color:var(--warn)">0</div>
-          <div class="label">连击</div>
-        </div>
-        <div class="quiz-stat">
-          <div class="num" id="quizTotalNum" style="color:var(--text2)">0</div>
-          <div class="label">已答</div>
-        </div>
-      </div>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-bar-inner" id="quizProgress" style="width:0%"></div>
-    </div>
-    <div class="streak-bar" id="streakBar"></div>
-  </div>
-  <div class="quiz-card card" id="quizCard">
-    <div id="quizContent"></div>
+    <!-- 屏幕区 -->
+    <div id="screen"></div>
   </div>
 </div>
 
-<!-- ====== MATCH PANEL ====== -->
-<div class="panel" id="panel-match">
-  <div class="card">
-    <div class="section-title"><span>♤</span> 速配挑战</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-      <p style="color:var(--text2);font-size:13px;">
-        点击左边的 <strong style="color:var(--accent)">代码</strong>，再点击右边的 <strong style="color:var(--accent2)">解释</strong> 进行配对。
-      </p>
-      <div class="match-progress">
-        已配对: <strong id="matchProgress">0</strong> / <strong id="matchTotal">0</strong>
-        <span style="margin-left:16px;">⏱ <span id="matchTimer">00</span>s</span>
-      </div>
-    </div>
-  </div>
-  <div class="match-container" id="matchContainer"></div>
-</div>
-
-<!-- ====== MODAL ====== -->
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <div class="modal-code" id="modalCode">G00</div>
-    <h2 id="modalName">快速定位</h2>
-    <p id="modalDesc">详细说明...</p>
-    <p id="modalFormat" style="font-family:monospace;color:var(--warn);font-size:13px;margin-top:8px;padding:6px 10px;background:rgba(255,214,0,.08);border-radius:6px;"></p>
-    <p id="modalNote" style="font-size:13px;margin-top:8px;"></p>
-    <p id="modalExample" style="font-size:13px;margin-top:8px;font-family:monospace;color:var(--success);"></p>
-    <button class="modal-close" onclick="closeModal()">知道了 👍</button>
-  </div>
-</div>
-
-</div>
-
+<script src="questions.js"></script>
 <script>
-const CODES = [
-  {code:"G00",cat:"G",name:"快速定位",desc:"刀具以最快速度移动到指定位置，不切削工件。用于空行程移动。",format:"G00 X_ Z_",note:"⛔ 移动中不切削，注意安全距离！",example:"示例: G00 X50 Z5   →  快速移动到 X50 Z5"},
-  {code:"G01",cat:"G",name:"直线插补",desc:"刀具以指定的进给速度沿直线切削。最常用的切削指令。",format:"G01 X_ Z_ F_",note:"✏️ F为进给速度，单位 mm/min 或 mm/r",example:"示例: G01 X30 Z-20 F0.2   → 以0.2mm/r直线切削"},
-  {code:"G02",cat:"G",name:"顺时针圆弧插补",desc:"刀具沿顺时针方向走圆弧路径，用于加工外圆圆弧、圆角等。",format:"G02 X_ Z_ R_ F_ 或 G02 X_ Z_ I_ K_ F_",note:"🔵 R=圆弧半径，I/K=圆心相对起点偏移",example:"示例: G02 X40 Z-30 R10 F0.15 → 顺圆弧X40→Z-30, R10"},
-  {code:"G03",cat:"G",name:"逆时针圆弧插补",desc:"刀具沿逆时针方向走圆弧路径，常用于内孔圆弧加工。",format:"G03 X_ Z_ R_ F_ 或 G03 X_ Z_ I_ K_ F_",note:"🔵 与G02方向相反",example:"示例: G03 X40 Z-30 R10 F0.15"},
-  {code:"G04",cat:"G",name:"暂停/延时",desc:"让刀具在当前位置暂停指定的时间，常用于槽底光整、断屑。",format:"G04 X_ 或 G04 P_",note:"⏱ 单位：秒或毫秒（因系统而异）",example:"示例: G04 X2.0 → 暂停2秒"},
-  {code:"G20",cat:"G",name:"英制单位",desc:"设定为英制输入模式，坐标/进给以英寸为单位。",format:"G20",note:"🇺🇸 1英寸=25.4mm",example:"示例: G20 → 切换为英制模式"},
-  {code:"G21",cat:"G",name:"公制单位",desc:"设定为公制输入模式（毫米），国内最常用。",format:"G21",note:"📐 开机默认G21",example:"示例: G21 → 切换为公制模式"},
-  {code:"G28",cat:"G",name:"返回参考点",desc:"刀具快速移动到机床参考点（换刀点），经中间点返回。",format:"G28 U0 W0",note:"🏁 先经中间点再回零，避免干涉",example:"示例: G28 U0 W0 → 经中间点快速回参考点"},
-  {code:"G32",cat:"G",name:"螺纹切削",desc:"用于加工等距螺纹，每转进给量等于螺距。需要主轴编码器。",format:"G32 Z_ F_",note:"🧵 F=螺距(mm)",example:"示例: G32 Z-30 F2.0 → 切螺距2mm螺纹"},
-  {code:"G40",cat:"G",name:"取消刀具补偿",desc:"取消刀具半径补偿，回归正常路径。",format:"G40",note:"⚠️ 取消前刀具必须已离开工件",example:"示例: G40 G00 X100 → 取消补偿后退回"},
-  {code:"G41",cat:"G",name:"刀具半径左补偿",desc:"刀具在切削轮廓的左侧偏移一个刀尖半径值。",format:"G41 D_",note:"🔧 沿运动方向看，刀具在轮廓左侧",example:"示例: G41 D1 G01 X30 F0.1"},
-  {code:"G42",cat:"G",name:"刀具半径右补偿",desc:"刀具在切削轮廓的右侧偏移一个刀尖半径值。",format:"G42 D_",note:"🔧 沿运动方向看，刀具在轮廓右侧",example:"示例: G42 D1 G01 X30 F0.1"},
-  {code:"G50",cat:"G",name:"坐标系设定/最高转速限制",desc:"设定工件坐标系或限制主轴最高转速（配合G96）。",format:"G50 S_ 或 G50 X_ Z_",note:"🔄 限制恒线速时主轴最高转速",example:"示例: G50 S2000 → 最高转速2000r/min"},
-  {code:"G54",cat:"G",name:"工件坐标系1",desc:"选择第1个预置的工件坐标系偏置值。",format:"G54",note:"📌 G54~G59共6个坐标系",example:"示例: G54 G00 X0 Z0"},
-  {code:"G55",cat:"G",name:"工件坐标系2",desc:"选择第2个预置的工件坐标系偏置值。",format:"G55",note:"",example:"示例: G90 G55 → 使用G55坐标系"},
-  {code:"G70",cat:"G",name:"精加工循环",desc:"对G71/G72/G73粗加工轮廓进行精加工。",format:"G70 P_ Q_",note:"✨ P=精加工起始段号，Q=结束段号",example:"示例: G70 P100 Q200 F0.1"},
-  {code:"G71",cat:"G",name:"外圆粗车循环",desc:"沿Z轴方向进行外圆/内孔粗切削，自动分层去余量。",format:"G71 U_R_\nG71 P_Q_U_W_F_",note:"📐 U=切深，R=退刀；U/W=精加工余量",example:"示例: G71 U2 R0.5; G71 P100 Q200 U0.5 W0.1 F0.3"},
-  {code:"G72",cat:"G",name:"端面粗车循环",desc:"沿X轴方向进行端面粗切削，适合盘类零件。",format:"G72 W_R_\nG72 P_Q_U_W_F_",note:"📐 W=Z向切深",example:"示例: G72 W1.5 R0.5; G72 P100 Q200 U0.5 W0.1 F0.3"},
-  {code:"G73",cat:"G",name:"仿形粗车循环",desc:"按轮廓形状仿形粗切削，适合锻件/铸件毛坯。",format:"G73 U_W_R_\nG73 P_Q_U_W_F_",note:"🏗 U=X退刀，W=Z退刀，R=分层数",example:"示例: G73 U3 W1 R5; G73 P100 Q200 U0.5 W0.1 F0.3"},
-  {code:"G74",cat:"G",name:"端面啄钻/端面槽循环",desc:"端面啄式钻孔或切端面槽，自动退屑。",format:"G74 R_\nG74 X_Z_P_Q_F_",note:"🕳 R=退刀量；P=X移量，Q=Z切深",example:"示例: G74 R1; G74 X0 Z-20 P0 Q3 F0.1"},
-  {code:"G75",cat:"G",name:"外圆切槽循环",desc:"外圆/内孔切槽，自动分层切削退刀。",format:"G75 R_\nG75 X_Z_P_Q_F_",note:"🔪 R=退刀量；P=X切深，Q=Z偏移",example:"示例: G75 R0.5; G75 X20 Z-10 P3 Q2 F0.12"},
-  {code:"G76",cat:"G",name:"螺纹切削复合循环",desc:"自动多刀分层切螺纹，支持锥螺纹/多头螺纹。",format:"G76 P_Q_R_\nG76 X_Z_R_P_Q_F_",note:"🧵 P(m r a)=精加工次数/退尾/牙型角",example:"示例: G76 P020060 Q100 R50; G76 X36 Z-30 P1500 Q400 F2.0"},
-  {code:"G90",cat:"G",name:"外圆/内孔切削循环",desc:"圆柱/圆锥车削循环，一次切削后退回起点。",format:"G90 X_Z_F_ 或 G90 X_Z_R_F_",note:"🔄 R为锥体半径差",example:"示例: G90 X40 Z-30 F0.2"},
-  {code:"G92",cat:"G",name:"螺纹切削循环",desc:"等距螺纹车削循环，自动进刀→切削→退刀→返回。",format:"G92 X_Z_F_ 或 G92 X_Z_R_F_",note:"🧵 F=螺距，需分层切削",example:"示例: G92 X38.5 Z-30 F2.0"},
-  {code:"G94",cat:"G",name:"端面切削循环",desc:"端面或锥面端面车削循环。",format:"G94 X_Z_F_ 或 G94 X_Z_R_F_",note:"🔄 适用于短台阶/端面加工",example:"示例: G94 X20 Z0 F0.2"},
-  {code:"G96",cat:"G",name:"恒线速度控制",desc:"保持切削点线速度恒定，转速随直径变化自动调整。",format:"G96 S_ (S=m/min)",note:"⚡ 需配合G50限制最高转速",example:"示例: G96 S150 G50 S2500"},
-  {code:"G97",cat:"G",name:"恒转速控制",desc:"取消G96，恢复恒定的主轴转速模式。",format:"G97 S_ (S=r/min)",note:"⚡ 螺纹切削必须用G97",example:"示例: G97 S1200 M03"},
-  {code:"G98",cat:"G",name:"每分钟进给",desc:"设定进给率为每分钟进给量（mm/min）。",format:"G98 F_",note:"⏩ F单位 mm/min",example:"示例: G98 F100"},
-  {code:"G99",cat:"G",name:"每转进给",desc:"设定进给率为每转进给量（mm/r），与主轴转速联动。",format:"G99 F_",note:"⏩ F单位 mm/r，最常用",example:"示例: G99 F0.15"},
+const screen = document.getElementById('screen');
+const fill = document.getElementById('fill');
+const tool = document.getElementById('tool');
+const progTxt = document.getElementById('progTxt');
+const lvRow = document.getElementById('lvRow');
 
-  {code:"M00",cat:"M",name:"程序暂停",desc:"程序执行到此停止，按循环启动继续。用于测量/检查。",format:"M00",note:"⏸ 常用于中途测量工件",example:"示例: G00 X100 Z100; M00; → 暂停检查"},
-  {code:"M01",cat:"M",name:"选择暂停",desc:"与M00类似，仅在选择停止开关打开时有效。",format:"M01",note:"🔘 配合操作面板按键使用",example:"示例: M01 → 条件暂停"},
-  {code:"M02",cat:"M",name:"程序结束",desc:"主程序结束，主轴停/冷却关，光标停在末尾。",format:"M02",note:"🏁 不自动回到开头",example:"示例: M02 → 程序结束"},
-  {code:"M03",cat:"M",name:"主轴正转（CW）",desc:"主轴顺时针旋转（从主轴端看）。",format:"M03 S_",note:"🔄 配合S设定转速",example:"示例: M03 S1500 → 正转1500r/min"},
-  {code:"M04",cat:"M",name:"主轴反转（CCW）",desc:"主轴逆时针旋转。",format:"M04 S_",note:"🔄 反车/攻丝退刀时使用",example:"示例: M04 S800"},
-  {code:"M05",cat:"M",name:"主轴停止",desc:"停止主轴旋转。换刀/测量前必须先执行。",format:"M05",note:"⏹ 安全操作必须执行",example:"示例: M05 → 主轴停止"},
-  {code:"M06",cat:"M",name:"换刀指令",desc:"执行自动换刀（刀塔旋转）。",format:"M06 T_",note:"🔧 T后4位：前2刀位号，后2刀补号",example:"示例: T0101 M06 → 换1号刀1号补"},
-  {code:"M07",cat:"M",name:"冷却液开（雾状）",desc:"雾状冷却液，用于微量润滑冷却。",format:"M07",note:"💨 精加工/高速切削推荐",example:"示例: M07 → 开雾状冷却"},
-  {code:"M08",cat:"M",name:"冷却液开（喷射）",desc:"喷射式冷却液，大量冲屑降温。最常用。",format:"M08",note:"💦 粗加工推荐",example:"示例: M08 → 开喷射冷却"},
-  {code:"M09",cat:"M",name:"冷却液关",desc:"关闭所有冷却液。",format:"M09",note:"💧 程序结束前必须关闭",example:"示例: M09 → 关冷却"},
-  {code:"M10",cat:"M",name:"卡盘松开",desc:"松开液压卡盘，用于装卸工件。",format:"M10",note:"🛑 确保主轴已停止",example:"示例: M05; M10 → 停主轴→松卡盘"},
-  {code:"M11",cat:"M",name:"卡盘夹紧",desc:"夹紧液压卡盘。",format:"M11",note:"🛑 装好工件后执行",example:"示例: M11 → 夹紧卡盘"},
-  {code:"M30",cat:"M",name:"程序结束并复位",desc:"程序结束，主轴/冷却停，光标和主轴复位到开头。",format:"M30",note:"🔄 自动回到开头，方便再次运行",example:"示例: M30 → 结束并复位"},
-  {code:"M41",cat:"M",name:"主轴低速档",desc:"切换到低速齿轮档，获得大扭矩。",format:"M41",note:"⚙ 重切削/大直径工件时使用",example:"示例: M41 M03 S500"},
-  {code:"M42",cat:"M",name:"主轴高速档",desc:"切换到高速齿轮档，获得高转速。",format:"M42",note:"⚙ 精加工/小直径工件时使用",example:"示例: M42 M03 S3000"},
+let state = {
+  levelIdx: 0,
+  qIdx: 0,
+  correct: 0,
+  total: 0,
+  answeredThisLevel: 0,
+  correctThisLevel: 0,
+  locked: false
+};
 
-  {code:"T",cat:"other",name:"刀具选择",desc:"选择刀具和刀补。T后4位：前2刀位号，后2刀补号。",format:"T_ _  如 T0101",note:"🔧 配合M06或单独使用",example:"示例: T0303 → 3号刀3号补"},
-  {code:"S",cat:"other",name:"主轴转速/线速度",desc:"设定主轴转速(r/min)或线速度(m/min)。",format:"S_ (数值)",note:"⚡ 与G96/G97配合使用",example:"示例: G97 S2000 M03"},
-  {code:"F",cat:"other",name:"进给速度",desc:"设定进给速度，取决于G98或G99模式。",format:"F_ (数值)",note:"📏 螺纹切削中F=螺距",example:"示例: G99 F0.15"},
-  {code:"G50 S",cat:"other",name:"最高转速限制",desc:"设定最高转速上限，配合G96恒线速使用。",format:"G50 S_",note:"⚠️ 安全保护",example:"示例: G96 S150 G50 S2500"},
-];
+const TOTAL_Q = LEVELS.reduce((s,l)=>s+l.questions.length,0);
 
-// ==================== LIBRARY ====================
-let currentFilter = 'all';
-let searchTerm = '';
-
-function renderLibrary() {
-  const grid = document.getElementById('codeGrid');
-  const filtered = CODES.filter(c => {
-    if (currentFilter !== 'all' && c.cat !== currentFilter) return false;
-    if (searchTerm) {
-      const s = searchTerm.toLowerCase();
-      return c.code.toLowerCase().includes(s) || c.name.toLowerCase().includes(s) || c.desc.toLowerCase().includes(s);
-    }
-    return true;
+function buildLvRow(){
+  lvRow.innerHTML = '';
+  LEVELS.forEach((l,i)=>{
+    const d = document.createElement('div');
+    d.className = 'lv-dot' + (i===state.levelIdx?' active':'') + (i<state.levelIdx?' done':'');
+    d.innerHTML = `<span class="ic">${i<state.levelIdx?'✅':l.icon}</span><span class="nm">第${l.id}关</span>`;
+    lvRow.appendChild(d);
   });
-  grid.innerHTML = filtered.map(c => {
-    const catColor = c.cat==='G'?'#7b2ff7':c.cat==='M'?'var(--accent2)':'var(--success)';
-    const catLabel = c.cat==='G'?'G代码':c.cat==='M'?'M代码':'其他';
-    return `<div class="code-item" onclick="showDetail('${c.code}')">
-      <div class="code" style="color:${catColor}">${c.code}</div>
-      <div class="code-name"><span class="tag-sm tag-${c.cat}" style="margin-right:6px">${catLabel}</span>${c.name}</div>
-      <div class="code-desc">${c.desc}</div>
-      <div class="code-format">${c.format.replace(/\n/g,'<br>')}</div>
+}
+
+function updateProgress(){
+  const done = state.total;
+  const pct = Math.round(done/TOTAL_Q*100);
+  fill.style.width = pct+'%';
+  tool.style.left = pct+'%';
+  progTxt.textContent = pct+'%';
+}
+
+function renderStart(){
+  buildLvRow();
+  screen.innerHTML = `
+    <div class="center">
+      <div class="big">🏭</div>
+      <h2>欢迎来到数控车间</h2>
+      <p>你是一名 K2000GtC V2 数控系统的程序员学徒。</p>
+      <p>共 <b style="color:#fff">5 个关卡</b> · <b style="color:#fff">${TOTAL_Q} 道题</b>，覆盖 G代码、坐标系、S/T/M 功能、固定循环与宏程序。</p>
+      <p>每答对一题，机床就前进一步，加工出你的第一个零件！</p>
+      <div style="margin-top:20px"><button class="btn" onclick="startGame()">🚀 进入车间</button></div>
     </div>`;
-  }).join('');
 }
 
-document.getElementById('codeSearch').addEventListener('input', e => { searchTerm = e.target.value; renderLibrary(); });
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    renderLibrary();
-  });
-});
-
-// ==================== MODAL ====================
-function showDetail(code) {
-  const c = CODES.find(x => x.code === code);
-  if (!c) return;
-  document.getElementById('modalCode').textContent = c.code;
-  document.getElementById('modalName').textContent = c.name;
-  document.getElementById('modalDesc').textContent = c.desc;
-  document.getElementById('modalFormat').innerHTML = '📝 格式: ' + c.format.replace(/\n/g,'<br>');
-  document.getElementById('modalNote').innerHTML = c.note ? '💡 ' + c.note : '';
-  document.getElementById('modalExample').innerHTML = c.example || '';
-  document.getElementById('modal').classList.add('show');
+function startGame(){
+  state.levelIdx = 0; state.qIdx = 0; state.correct = 0; state.total = 0;
+  renderLevelIntro();
 }
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
-document.getElementById('modal').addEventListener('click', e => { if(e.target === e.currentTarget) closeModal(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
-// ==================== QUIZ ====================
-const QUIZ_LEVELS = [
-  {name:'入门', qCount:8, desc:'基础G/M代码'},
-  {name:'进阶', qCount:12, desc:'常见车削循环'},
-  {name:'大师', qCount:16, desc:'复合循环+细节'},
-];
-let quizState = { level:0, questions:[], currentQ:0, score:0, streak:0, bestStreak:0, total:0, correct:0, incorrect:0, answered:false };
+function renderLevelIntro(){
+  const lv = LEVELS[state.levelIdx];
+  state.correctThisLevel = 0; state.answeredThisLevel = 0; state.qIdx = 0;
+  buildLvRow();
+  screen.innerHTML = `
+    <div class="center">
+      <div class="big">${lv.icon}</div>
+      <h2>${lv.name}</h2>
+      <div class="sub" style="text-align:center">${lv.subtitle}</div>
+      <div class="intro" style="text-align:left">${lv.intro}</div>
+      <button class="btn" onclick="renderQuestion()">开始本关 ▶</button>
+    </div>`;
+}
 
-function generateQuestion(levelIdx) {
-  const pool = [...CODES];
-  const hardCodes = ['G70','G71','G72','G73','G74','G75','G76','G32','G40','G41','G42','G92'];
-  if (levelIdx === 0) {
-    const easy = pool.filter(c => !hardCodes.includes(c.code) && c.cat !== 'other');
-    return easy[Math.floor(Math.random() * easy.length)];
-  } else if (levelIdx === 1) {
-    return pool[Math.floor(Math.random() * pool.length)];
+function renderQuestion(){
+  state.locked = false;
+  const lv = LEVELS[state.levelIdx];
+  const item = lv.questions[state.qIdx];
+  buildLvRow();
+  const optsHtml = item.options.map((o,i)=>`
+    <div class="opt" data-i="${i}" onclick="choose(${i})">
+      <div class="tag">${String.fromCharCode(65+i)}</div>
+      <div>${o}</div>
+    </div>`).join('');
+  screen.innerHTML = `
+    <h2 class="title">${lv.icon} ${lv.name}</h2>
+    <div class="sub">${lv.subtitle} · 第 ${state.qIdx+1}/${lv.questions.length} 题</div>
+    <div class="q"><span class="qnum">Q${state.qIdx+1}.</span>${item.q}</div>
+    <div class="opts" id="opts">${optsHtml}</div>
+    <div class="exp" id="exp"></div>
+    <div class="footer">
+      <div class="stat">总得分 <b>${state.correct}</b> / ${state.total} 已答 · 全程 ${TOTAL_Q} 题</div>
+      <button class="btn" id="nextBtn" disabled onclick="nextQuestion()">下一题 →</button>
+    </div>`;
+  updateProgress();
+}
+
+function choose(i){
+  if(state.locked) return;
+  state.locked = true;
+  const lv = LEVELS[state.levelIdx];
+  const item = lv.questions[state.qIdx];
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  const correct = item.answer;
+  const isRight = i===correct;
+
+  opts[correct].classList.add('correct');
+  if(!isRight) opts[i].classList.add('wrong');
+
+  state.total++; state.answeredThisLevel++;
+  if(isRight){ state.correct++; state.correctThisLevel++; }
+
+  const exp = document.getElementById('exp');
+  exp.className = 'exp show ' + (isRight?'ok':'no');
+  exp.innerHTML = (isRight
+    ? '✅ <b>正确！</b> ' : '❌ <b>再记一下：</b> ') + item.exp;
+
+  document.getElementById('nextBtn').disabled = false;
+  updateProgress();
+}
+
+function nextQuestion(){
+  const lv = LEVELS[state.levelIdx];
+  if(state.qIdx < lv.questions.length-1){
+    state.qIdx++;
+    renderQuestion();
   } else {
-    const hard = pool.filter(c => hardCodes.includes(c.code) || c.cat === 'other');
-    return hard.length ? hard[Math.floor(Math.random() * hard.length)] : pool[Math.floor(Math.random() * pool.length)];
+    renderLevelDone();
   }
 }
 
-function generateWrongAnswers(correct) {
-  const others = CODES.filter(c => c.code !== correct.code && c.cat === correct.cat).sort(() => Math.random() - 0.5).slice(0, 3);
-  const wrongs = others.map(c => ({ text: c.code + ' ' + c.name, code: c.code }));
-  while (wrongs.length < 3) {
-    const r = CODES[Math.floor(Math.random() * CODES.length)];
-    if (r.code !== correct.code && !wrongs.find(w => w.code === r.code))
-      wrongs.push({ text: r.code + ' ' + r.name, code: r.code });
-  }
-  return wrongs;
-}
-
-function startQuiz() {
-  const lv = quizState.level;
-  const level = QUIZ_LEVELS[lv];
-  const questions = [];
-  for (let i = 0; i < level.qCount; i++) {
-    const correct = generateQuestion(lv);
-    const wrongs = generateWrongAnswers(correct);
-    const allOptions = [{text: correct.code + ' ' + correct.name, code: correct.code, correct: true}, ...wrongs].sort(() => Math.random() - 0.5);
-
-    let questionText, hintText;
-    if (i % 3 === 0) {
-      questionText = `"${correct.code}" 是什么代码？`;
-      hintText = `类别: ${correct.cat==='G'?'G代码':correct.cat==='M'?'M代码':'其他'}`;
-    } else if (i % 3 === 1) {
-      questionText = `哪个代码是「${correct.name}」？`;
-      hintText = correct.desc.slice(0, 40);
-    } else {
-      questionText = `关于 "${correct.code}" 的正确描述是？`;
-      hintText = `格式: ${correct.format.slice(0, 20)}...`;
-    }
-    questions.push({
-      displayCode: i % 3 === 0 ? correct.code : null,
-      question: questionText,
-      hint: hintText,
-      options: allOptions,
-      correctCode: correct.code,
-      correctName: correct.name,
-      format: correct.format,
-      note: correct.note,
-      desc: correct.desc
-    });
-  }
-  quizState.questions = questions;
-  quizState.currentQ = 0;
-  quizState.score = 0;
-  quizState.streak = 0;
-  quizState.bestStreak = 0;
-  quizState.total = 0;
-  quizState.correct = 0;
-  quizState.incorrect = 0;
-  quizState.answered = false;
-  document.getElementById('quizLevelInfo').textContent = `关卡 ${lv+1} · ${level.name} · ${level.desc}`;
-  renderQuiz();
-}
-
-function renderQuiz() {
-  const {currentQ, questions, score, streak, total} = quizState;
-  const progress = questions.length > 0 ? (currentQ / questions.length) * 100 : 0;
-  document.getElementById('quizProgress').style.width = Math.min(progress, 100) + '%';
-  document.getElementById('quizScore').textContent = score;
-  document.getElementById('quizStreakNum').textContent = streak;
-  document.getElementById('quizTotalNum').textContent = total;
-
-  const maxDots = 5;
-  const streakBar = document.getElementById('streakBar');
-  streakBar.innerHTML = '';
-  for (let i = 0; i < maxDots; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'streak-dot';
-    if (i < streak) dot.classList.add('lit');
-    streakBar.appendChild(dot);
-  }
-
-  if (currentQ >= questions.length) { showQuizResult(); return; }
-  const q = questions[currentQ];
-  const content = document.getElementById('quizContent');
-  let codeHtml = '';
-  if (q.displayCode) {
-    const c = CODES.find(x => x.code === q.displayCode);
-    const catColor = c && c.cat === 'G' ? '#7b2ff7' : (c && c.cat === 'M' ? 'var(--accent2)' : 'var(--success)');
-    codeHtml = `<div class="question-code" style="color:${catColor}">${q.displayCode}</div>`;
-  }
-  content.innerHTML = `
-    <div class="question-label">第 ${currentQ+1}/${questions.length} 题</div>
-    ${codeHtml}
-    <div class="question-text">${q.question}</div>
-    <div class="question-hint">${q.hint}</div>
-    <div class="quiz-options" id="quizOptions">
-      ${q.options.map((opt, idx) => `<button class="quiz-option" data-idx="${idx}" onclick="answerQuiz(${idx})">${opt.text}</button>`).join('')}
-    </div>
-    <div id="quizFeedback"></div>
-    <div id="quizActions"></div>`;
-}
-
-function answerQuiz(idx) {
-  if (quizState.answered) return;
-  quizState.answered = true;
-  const q = quizState.questions[quizState.currentQ];
-  const selected = q.options[idx];
-  const isCorrect = selected.correct;
-  const options = document.querySelectorAll('.quiz-option');
-  options.forEach((opt, i) => {
-    opt.classList.add('disabled');
-    if (q.options[i].correct) opt.classList.add('correct');
-    if (i === idx && !isCorrect) opt.classList.add('wrong');
-  });
-  quizState.total++;
-  if (isCorrect) {
-    quizState.correct++;
-    quizState.streak++;
-    if (quizState.streak > quizState.bestStreak) quizState.bestStreak = quizState.streak;
-    const bonus = Math.floor(quizState.streak / 3) * 5;
-    const points = 10 + bonus;
-    quizState.score += points;
-    document.getElementById('quizFeedback').innerHTML = `<div class="quiz-feedback correct">✅ 正确！+${points}分${bonus > 0 ? ' 🔥 '+quizState.streak+'连击奖励+'+bonus : ''}</div>`;
-  } else {
-    quizState.incorrect++;
-    quizState.streak = 0;
-    document.getElementById('quizFeedback').innerHTML = `<div class="quiz-feedback wrong">❌ 正确答案: <strong>${q.correctName}（${q.correctCode}）</strong><br>
-      <span style="font-size:12px;">📖 ${q.desc}</span></div>`;
-  }
-  const actions = document.getElementById('quizActions');
-  const isLast = quizState.currentQ >= quizState.questions.length - 1;
-  actions.innerHTML = `<button class="quiz-next-btn" onclick="nextQuiz()">${isLast ? '查看成绩 🏆' : '下一题 →'}</button>`;
-  document.getElementById('quizStreakNum').textContent = quizState.streak;
-  document.getElementById('quizScore').textContent = quizState.score;
-}
-
-function nextQuiz() { quizState.currentQ++; quizState.answered = false; renderQuiz(); }
-
-function showQuizResult() {
-  const {score, correct, incorrect, total, bestStreak} = quizState;
-  const pct = total > 0 ? Math.round(correct / total * 100) : 0;
-  let grade, gradeEmoji;
-  if (pct >= 90) { grade='S'; gradeEmoji='🏆'; } else if (pct>=75) { grade='A'; gradeEmoji='🌟'; } else if (pct>=60) { grade='B'; gradeEmoji='👍'; } else if (pct>=45) { grade='C'; gradeEmoji='💪'; } else { grade='D'; gradeEmoji='📚'; }
-  const lvName = QUIZ_LEVELS[quizState.level].name;
-  const content = document.getElementById('quizContent');
-  content.innerHTML = `
-    <div class="result-screen">
-      <div class="grade">${gradeEmoji} ${lvName}关卡 · 等级 ${grade}</div>
-      <div class="big-score">${score}</div>
-      <div style="font-size:16px;color:var(--text2);margin-bottom:20px;">总得分</div>
-      <div class="result-details">
-        <div class="result-detail"><div class="num green">${correct}</div><div class="label">✅ 正确</div></div>
-        <div class="result-detail"><div class="num red">${incorrect}</div><div class="label">❌ 错误</div></div>
-        <div class="result-detail"><div class="num" style="color:var(--warn)">${pct}%</div><div class="label">正确率</div></div>
-        <div class="result-detail"><div class="num" style="color:var(--accent)">${bestStreak}</div><div class="label">🔥 最长连击</div></div>
-      </div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
-        <button class="restart-btn" onclick="quizState.level=${quizState.level};startQuiz()">🔄 再来一次</button>
-        <button class="restart-btn" style="background:#7b2ff7" onclick="nextLevel()">${quizState.level < 2 ? '下一关 →' : '🏁 终极挑战'}</button>
-        <button class="restart-btn" style="background:var(--border);color:var(--text)" onclick="quizState.level=0;startQuiz()">🔁 重头开始</button>
+function renderLevelDone(){
+  const lv = LEVELS[state.levelIdx];
+  const c = state.correctThisLevel, t = lv.questions.length;
+  const perfect = c===t;
+  const isLast = state.levelIdx === LEVELS.length-1;
+  const emoji = perfect ? '🌟' : (c/t>=0.6 ? '👍' : '💪');
+  const msg = perfect ? '满分通关！加工精度完美！'
+             : (c/t>=0.6 ? '顺利过关，零件合格！' : '过关了，但还有毛刺，回头可再练习。');
+  buildLvRow();
+  screen.innerHTML = `
+    <div class="center">
+      <div class="big">${emoji}</div>
+      <h2>${lv.name} 完成</h2>
+      <div class="score-badge">本关 ${c} / ${t} 正确</div>
+      <p>${msg}</p>
+      ${isLast ? '' : '<p>下一关：<b style="color:#fff">'+LEVELS[state.levelIdx+1].name+'</b></p>'}
+      <div style="margin-top:18px">
+        <button class="btn ghost" onclick="reviewLevel()" style="margin-right:8px">↻ 重做本关</button>
+        <button class="btn" onclick="afterLevel()">${isLast?'查看结算 🏆':'进入下一关 ▶'}</button>
       </div>
     </div>`;
 }
 
-function nextLevel() { quizState.level = quizState.level < 2 ? quizState.level + 1 : 0; startQuiz(); }
-
-// ==================== MATCH ====================
-let matchState = { selected:null, matched:[], pairs:[], timer:0, timerInterval:null, started:false };
-
-function startMatch() {
-  if (matchState.timerInterval) clearInterval(matchState.timerInterval);
-  const shuffled = [...CODES].sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, 6);
-  const left = selected.map(c => ({id:c.code, type:'code', text:c.code, pairId:c.code})).sort(() => Math.random() - 0.5);
-  const right = selected.map(c => ({id:c.code+'_d', type:'desc', text:c.name, pairId:c.code, extra:c.desc.slice(0,40)})).sort(() => Math.random() - 0.5);
-  matchState.selected = null;
-  matchState.matched = [];
-  matchState.pairs = [...left, ...right];
-  matchState.timer = 0;
-  matchState.started = false;
-  document.getElementById('matchProgress').textContent = '0';
-  document.getElementById('matchTotal').textContent = selected.length;
-  document.getElementById('matchTimer').textContent = '00';
-  const container = document.getElementById('matchContainer');
-  container.innerHTML = `
-    <div class="match-column" id="matchLeft"><h3>🔷 代码</h3>
-      ${left.map(c => `<div class="match-card match-code" data-id="${c.id}" data-pair="${c.pairId}" data-side="left" onclick="selectMatch('${c.id}')">${c.text}</div>`).join('')}
-    </div><div class="match-column" id="matchRight"><h3>🔶 含义</h3>
-      ${right.map(c => `<div class="match-card match-desc" data-id="${c.id}" data-pair="${c.pairId}" data-side="right" onclick="selectMatch('${c.id}')"><div style="font-weight:700">${c.text}</div><div style="font-size:11px;color:var(--text2);margin-top:2px;">${c.extra}…</div></div>`).join('')}
-    </div>`;
+function reviewLevel(){
+  // 重做本关：扣掉本关已计入的分数与题数
+  state.correct -= state.correctThisLevel;
+  state.total -= state.answeredThisLevel;
+  renderLevelIntro();
 }
 
-function selectMatch(id) {
-  const card = document.querySelector(`.match-card[data-id="${id}"]`);
-  if (!card || card.classList.contains('matched')) return;
-  if (matchState.selected === id) { card.classList.remove('selected'); matchState.selected = null; return; }
-  if (!matchState.started) {
-    matchState.started = true;
-    matchState.timerInterval = setInterval(() => { matchState.timer++; document.getElementById('matchTimer').textContent = String(matchState.timer).padStart(2,'0'); }, 1000);
-  }
-  if (!matchState.selected) { card.classList.add('selected'); matchState.selected = id; return; }
-  const firstCard = document.querySelector(`.match-card[data-id="${matchState.selected}"]`);
-  const firstSide = firstCard.dataset.side;
-  const secondSide = card.dataset.side;
-  if (firstSide === secondSide) { firstCard.classList.remove('selected'); card.classList.add('selected'); matchState.selected = id; return; }
-  const leftCard = firstSide === 'left' ? firstCard : card;
-  const rightCard = firstSide === 'right' ? firstCard : card;
-  if (leftCard.dataset.pair === rightCard.dataset.pair) {
-    leftCard.classList.remove('selected'); leftCard.classList.add('matched');
-    rightCard.classList.remove('selected'); rightCard.classList.add('matched');
-    matchState.matched.push(leftCard.dataset.pair);
-    matchState.selected = null;
-    document.getElementById('matchProgress').textContent = matchState.matched.length;
-    const total = parseInt(document.getElementById('matchTotal').textContent);
-    if (matchState.matched.length >= total) {
-      clearInterval(matchState.timerInterval);
-      const t = matchState.timer;
-      setTimeout(() => { alert(`🎉 全部配对完成！\n⏱ 用时: ${t}秒\n🏆 得分: ${Math.max(100 - t * 2, 10)}`); setTimeout(startMatch, 1500); }, 400);
-    }
+function afterLevel(){
+  if(state.levelIdx < LEVELS.length-1){
+    state.levelIdx++;
+    renderLevelIntro();
   } else {
-    leftCard.classList.remove('selected'); leftCard.classList.add('wrong');
-    rightCard.classList.remove('selected'); rightCard.classList.add('wrong');
-    matchState.selected = null;
-    setTimeout(() => { leftCard.classList.remove('wrong'); rightCard.classList.remove('wrong'); }, 500);
+    renderFinal();
   }
 }
 
-// ==================== STARS ====================
-function createStars() {
-  const container = document.getElementById('stars');
-  for (let i = 0; i < 100; i++) {
-    const star = document.createElement('div');
-    star.className = 'star';
-    star.style.left = Math.random() * 100 + '%';
-    star.style.top = Math.random() * 100 + '%';
-    star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
-    star.style.setProperty('--dur', (Math.random() * 3 + 2) + 's');
-    star.style.animationDelay = (Math.random() * 5) + 's';
-    container.appendChild(star);
-  }
+function rankOf(pct){
+  if(pct>=95) return {t:'🏆 数控大师',d:'你已吃透这本手册，可以独立编写复杂加工程序！'};
+  if(pct>=80) return {t:'🥇 高级程序员',d:'基础扎实，稍加实战即可上手真实机床。'};
+  if(pct>=60) return {t:'🥈 合格操作工',d:'核心概念已掌握，建议重刷错题巩固。'};
+  return {t:'🥉 车间学徒',d:'别灰心，回炉再学一遍，你会进步很快！'};
 }
 
-// ==================== NAV ====================
-document.querySelectorAll('.nav-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
-    if (tab.dataset.tab === 'quiz') { if (quizState.questions.length === 0) startQuiz(); }
-    if (tab.dataset.tab === 'match') { startMatch(); }
-  });
-});
+function renderFinal(){
+  const pct = Math.round(state.correct/TOTAL_Q*100);
+  const r = rankOf(pct);
+  buildLvRow();
+  screen.innerHTML = `
+    <div class="center">
+      <div class="big">🏁</div>
+      <h2>全部通关！零件加工完成</h2>
+      <div class="score-badge">总成绩 ${state.correct} / ${TOTAL_Q} （${pct}%）</div>
+      <div class="rank">${r.t}</div>
+      <p>${r.d}</p>
+      <p style="margin-top:14px;color:#c7d1de">你已系统复习了 G代码、坐标系、S/T/M 功能、固定循环与宏程序 B 的核心知识。</p>
+      <div style="margin-top:20px">
+        <button class="btn" onclick="startGame()">🔄 再玩一次</button>
+      </div>
+    </div>`;
+  updateProgress();
+}
 
-// ==================== INIT ====================
-createStars();
-renderLibrary();
-startQuiz();
-startMatch();
+// 启动
+renderStart();
 </script>
 </body>
 </html>
