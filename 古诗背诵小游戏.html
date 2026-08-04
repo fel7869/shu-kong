@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古诗背诵小课堂 - 一剪梅</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #ffcdd2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #37474f;
+  }
+  .container { max-width: 600px; margin: 0 auto; }
+
+  .header {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,150,136,0.3);
+  }
+  .header h1 { font-size: 22px; color: #00695c; margin-bottom: 8px; }
+  .header p { font-size: 14px; color: #546e7a; }
+
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+
+  /* 导航标签 */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .tab {
+    flex: 1;
+    min-width: 70px;
+    padding: 12px 6px;
+    text-align: center;
+    background: rgba(255,255,255,0.7);
+    border: 2px solid transparent;
+    border-radius: 15px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: #00695c;
+    color: white;
+    border-color: #00695c;
+  }
+
+  /* 诗句显示 */
+  .poem-line {
+    font-size: 20px;
+    line-height: 2.2;
+    margin: 10px 0;
+    text-align: center;
+    padding: 8px;
+    background: linear-gradient(90deg, transparent, rgba(178,235,242,0.3), transparent);
+    border-radius: 10px;
+  }
+  .poem-author {
+    text-align: center;
+    color: #546e7a;
+    margin-top: 15px;
+    font-size: 15px;
+  }
+
+  /* 填空 */
+  .blank {
+    display: inline-block;
+    min-width: 50px;
+    border-bottom: 3px solid #00695c;
+    padding: 0 8px;
+    color: #00695c;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .blank.revealed {
+    color: #37474f;
+    border-bottom-color: #28a745;
+    background: rgba(40,167,69,0.1);
+  }
+  .blank.wrong {
+    color: #dc3545;
+    animation: shake 0.5s;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* 字选择区 */
+  .char-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 20px 0;
+    padding: 15px;
+    background: #e0f2f1;
+    border-radius: 15px;
+  }
+  .char-btn {
+    padding: 10px 16px;
+    background: white;
+    border: 2px solid #4db6ac;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .char-btn:active {
+    transform: scale(0.95);
+    background: #b2dfdb;
+  }
+  .char-btn.used {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* 按钮 */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #00695c;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s;
+  }
+  .btn:active { transform: scale(0.97); background: #004d40; }
+  .btn-secondary { background: #546e7a; }
+  .btn-secondary:active { background: #37474f; }
+
+  /* 图片说明 */
+  .scene-card {
+    background: #f3faf9;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    border-left: 4px solid #00897b;
+  }
+  .scene-card h3 {
+    color: #00695c;
+    margin-bottom: 8px;
+    font-size: 17px;
+  }
+  .scene-card p {
+    line-height: 1.8;
+    color: #37474f;
+    font-size: 15px;
+  }
+  .emoji {
+    font-size: 36px;
+    text-align: center;
+    margin: 8px 0;
+  }
+
+  /* 进度 */
+  .progress {
+    height: 8px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 4px;
+    margin: 15px 0;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00695c, #4db6ac);
+    border-radius: 4px;
+    transition: width 0.5s;
+  }
+
+  /* 庆祝 */
+  .celebrate {
+    text-align: center;
+    font-size: 50px;
+    margin: 20px 0;
+    animation: bounce 1s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .score {
+    text-align: center;
+    font-size: 20px;
+    color: #00695c;
+    margin: 15px 0;
+    font-weight: bold;
+  }
+
+  .hint {
+    text-align: center;
+    color: #546e7a;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .keyword {
+    color: #d84315;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🍃 古诗背诵小课堂 🍃</h1>
+    <p>《一剪梅·红藕香残玉簟秋》· 李清照 · 宋</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('read')">1. 读诗</div>
+    <div class="tab" onclick="switchTab('fill')">2. 填空</div>
+    <div class="tab" onclick="switchTab('understand')">3. 意思</div>
+    <div class="tab" onclick="switchTab('recite')">4. 背诵</div>
+  </div>
+
+  <!-- 1. 读诗 -->
+  <div class="card" id="tab-read">
+    <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">读一读</h2>
+    <div class="poem-line">红藕香残玉簟秋，</div>
+    <div class="poem-line">轻解罗裳，独上兰舟。</div>
+    <div class="poem-line">云中谁寄锦书来？</div>
+    <div class="poem-line">雁字回时，月满西楼。</div>
+    <div class="poem-line">花自飘零水自流。</div>
+    <div class="poem-line">一种相思，两处闲愁。</div>
+    <div class="poem-line">此情无计可消除，</div>
+    <div class="poem-line">才下眉头，却上心头。</div>
+    <div class="poem-author">—— 李清照（宋）</div>
+    <button class="btn" onclick="speakPoem()">🔊 听老师读</button>
+    <p class="hint">点击"听老师读"，跟着读三遍</p>
+  </div>
+
+  <!-- 2. 填空 -->
+  <div class="card" id="tab-fill" style="display:none;">
+    <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">填一填</h2>
+    <p class="hint" style="margin-bottom:15px;">从下面的字里点一个，填到空格里</p>
+
+    <div style="text-align:center; line-height:2.5; font-size:19px;">
+      <div>红<span class="blank" data-i="0">藕</span>香残<span class="blank" data-i="1">玉</span>簟秋，</div>
+      <div>轻解<span class="blank" data-i="2">罗</span>裳，独上<span class="blank" data-i="3">兰</span>舟。</div>
+      <div>云中谁寄<span class="blank" data-i="4">锦</span>书来？</div>
+      <div>雁字回时，月满西楼。</div>
+      <div>花自飘零水自流。</div>
+      <div>一种<span class="blank" data-i="5">相</span>思，两处<span class="blank" data-i="6">闲</span>愁。</div>
+      <div>此情无计可消除，</div>
+      <div>才下<span class="blank" data-i="7">眉</span>头，却上<span class="blank" data-i="8">心</span>头。</div>
+    </div>
+
+    <div class="progress"><div class="progress-bar" id="fillProgress" style="width:0%"></div></div>
+    <div class="char-pool" id="charPool"></div>
+    <p class="hint">每填对一个字得1分</p>
+    <div class="score" id="fillScore">得分: 0 / 9</div>
+    <button class="btn btn-secondary" onclick="resetFill()">🔄 重新开始</button>
+  </div>
+
+  <!-- 3. 意思 -->
+  <div class="card" id="tab-understand" style="display:none;">
+    <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">懂意思</h2>
+
+    <div class="scene-card">
+      <div class="emoji">🍂🪷</div>
+      <h3>红藕香残玉簟秋</h3>
+      <p>"红藕" = 红色的荷花<br>"香残" = 香味快没了（秋天到了）<br>"玉簟" = 竹席（像玉一样凉的竹席）<br>
+      <b>意思是：</b>荷花快凋谢了，秋天来了，躺在凉凉的竹席上。</p>
+    </div>
+
+    <div class="scene-card">
+      <div class="emoji">⛵</div>
+      <h3>轻解罗裳，独上兰舟</h3>
+      <p>"罗裳" = 丝绸外衣<br>"兰舟" = 用木兰树做的船（很美的小船）<br>
+      <b>意思是：</b>她轻轻脱下外衣，独自一人坐上小船。</p>
+    </div>
+
+    <div class="scene-card">
+      <div class="emoji">✉️🦢</div>
+      <h3>云中谁寄锦书来？雁字回时，月满西楼</h3>
+      <p>"锦书" = 用锦缎装订的信（很珍贵的信）<br>"雁字" = 大雁排成"人"字或"一"字飞<br>"西楼" = 她住的闺房<br>
+      <b>意思是：</b>天上有没有人给我寄信？大雁飞回来的时候，月光已经照满了我的小楼。<br>
+      💡 她在<b>想她的丈夫</b>（赵明诚）！</p>
+    </div>
+
+    <div class="scene-card">
+      <div class="emoji">🌸💧</div>
+      <h3>花自飘零水自流</h3>
+      <p>花儿自己飘落，水自己流走。<br>
+      💡 暗示：<b>美好的东西在慢慢消失</b>（就像她想念的人不在身边）</p>
+    </div>
+
+    <div class="scene-card">
+      <div class="emoji">💔</div>
+      <h3>一种相思，两处闲愁</h3>
+      <p><b>同一种想念，</b>在<b>两个地方</b>让人发愁。</p>
+      <p>她在想丈夫，丈夫也一定在想她 💑</p>
+    </div>
+
+    <div class="scene-card">
+      <div class="emoji">😟➡️❤️</div>
+      <h3>此情无计可消除，才下眉头，却上心头</h3>
+      <p>这种思念<u>没有办法去掉</u>。<br>
+      才从<b>眉头</b>（脸上）舒展开，<b>又</b>跑到了<b>心里</b>。<br><br>
+      💡 翻译：以为不皱眉就好了，结果心里还是想！</p>
+    </div>
+
+    <p class="hint">📜 全诗讲的是：李清照和丈夫分开后，非常<b>想念他</b>，望着大雁、看着月亮、独自泛舟，连眉头舒展了，心里还是放不下。</p>
+  </div>
+
+  <!-- 4. 背诵 -->
+  <div class="card" id="tab-recite" style="display:none;">
+    <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">挑战背诵</h2>
+
+    <div id="reciteArea">
+      <p style="text-align:center; margin-bottom:20px;">按顺序点击每一句，背完整首词</p>
+      <div id="reciteLines" style="text-align:center; line-height:2.2; font-size:18px;"></div>
+      <button class="btn" onclick="checkRecite()">✅ 检查</button>
+      <button class="btn btn-secondary" onclick="resetRecite()">🔄 重新打乱</button>
+    </div>
+
+    <div id="reciteResult" style="display:none;">
+      <div class="celebrate">🎉🌸🎉</div>
+      <h2 style="text-align:center; color:#00695c;">挑战成功！</h2>
+      <p style="text-align:center; margin:15px 0;">你真棒！把整首词背下来了！</p>
+      <div class="poem-line">红藕香残玉簟秋，</div>
+      <div class="poem-line">轻解罗裳，独上兰舟。</div>
+      <div class="poem-line">云中谁寄锦书来？</div>
+      <div class="poem-line">雁字回时，月满西楼。</div>
+      <div class="poem-line">花自飘零水自流。</div>
+      <div class="poem-line">一种相思，两处闲愁。</div>
+      <div class="poem-line">此情无计可消除，</div>
+      <div class="poem-line">才下眉头，却上心头。</div>
+      <button class="btn" onclick="resetRecite()">🔄 再背一遍</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Tab 切换 =====
+  function switchTab(name) {
+    ['read','fill','understand','recite'].forEach(t => {
+      document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach((tab,i) => {
+      tab.classList.toggle('active', ['read','fill','understand','recite'][i]===name);
+    });
+    if (name === 'recite') resetRecite();
+    if (name === 'fill') resetFill();
+  }
+
+  // ===== 1. 朗读 =====
+  function speakPoem() {
+    if (!('speechSynthesis' in window)) {
+      alert('您的浏览器不支持朗读功能');
+      return;
+    }
+    const text = '红藕香残玉簟秋。轻解罗裳，独上兰舟。云中谁寄锦书来？雁字回时，月满西楼。花自飘零水自流。一种相思，两处闲愁。此情无计可消除，才下眉头，却上心头。';
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.rate = 0.6;
+    u.pitch = 1.1;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+
+  // ===== 2. 填空 =====
+  const FILL_ORDER = ['藕','玉','罗','兰','锦','相','闲','眉','心'];
+
+  let fillAnswered = new Array(FILL_ORDER.length).fill(false);
+
+  function buildCharPool() {
+    const pool = document.getElementById('charPool');
+    pool.innerHTML = '';
+    const all = ['藕','玉','罗','兰','锦','相','闲','眉','心','红','秋','舟','雁','花'];
+    all.sort(() => Math.random() - 0.5);
+    all.forEach(ch => {
+      const btn = document.createElement('div');
+      btn.className = 'char-btn';
+      btn.textContent = ch;
+      btn.onclick = () => tryFill(ch, btn);
+      pool.appendChild(btn);
+    });
+  }
+
+  function tryFill(ch, btn) {
+    const blanks = document.querySelectorAll('#tab-fill .blank');
+    for (let i = 0; i < blanks.length; i++) {
+      if (!blanks[i].classList.contains('revealed')) {
+        if (ch === FILL_ORDER[i]) {
+          blanks[i].textContent = ch;
+          blanks[i].classList.add('revealed');
+          btn.classList.add('used');
+          fillAnswered[i] = true;
+          updateFillScore();
+          return;
+        } else {
+          blanks[i].classList.add('wrong');
+          setTimeout(() => blanks[i].classList.remove('wrong'), 500);
+          return;
+        }
+      }
+    }
+  }
+
+  function updateFillScore() {
+    const done = fillAnswered.filter(x => x).length;
+    document.getElementById('fillScore').textContent = '得分: ' + done + ' / ' + FILL_ORDER.length;
+    document.getElementById('fillProgress').style.width = (done/FILL_ORDER.length*100) + '%';
+
+    if (done === FILL_ORDER.length) {
+      setTimeout(() => alert('🎉 太棒了！全部填对！去"意思"看看这首词讲什么吧！'), 300);
+    }
+  }
+
+  function resetFill() {
+    fillAnswered = new Array(FILL_ORDER.length).fill(false);
+    const blanks = document.querySelectorAll('#tab-fill .blank');
+    blanks.forEach((b, i) => {
+      b.textContent = '　　';
+      b.classList.remove('revealed');
+      b.style.display = 'inline-block';
+    });
+    buildCharPool();
+    updateFillScore();
+  }
+
+  // ===== 4. 背诵 =====
+  const POEM_LINES = [
+    '红藕香残玉簟秋，',
+    '轻解罗裳，独上兰舟。',
+    '云中谁寄锦书来？',
+    '雁字回时，月满西楼。',
+    '花自飘零水自流。',
+    '一种相思，两处闲愁。',
+    '此情无计可消除，',
+    '才下眉头，却上心头。'
+  ];
+
+  let userOrder = [];
+
+  function resetRecite() {
+    document.getElementById('reciteArea').style.display = 'block';
+    document.getElementById('reciteResult').style.display = 'none';
+    userOrder = [];
+    renderReciteLines();
+  }
+
+  function renderReciteLines() {
+    const lines = [...POEM_LINES];
+    lines.sort(() => Math.random() - 0.5);
+    const container = document.getElementById('reciteLines');
+    container.innerHTML = '';
+    lines.forEach(line => {
+      const div = document.createElement('div');
+      div.textContent = line;
+      div.style.cssText = 'padding:12px; margin:6px; background:#e0f2f1; border-radius:10px; cursor:pointer; user-select:none;';
+      div.onclick = () => {
+        if (userOrder.includes(line)) return;
+        userOrder.push(line);
+        div.style.background = '#c8e6c9';
+        div.style.textDecoration = 'line-through';
+        div.style.opacity = '0.6';
+      };
+      container.appendChild(div);
+    });
+  }
+
+  function checkRecite() {
+    if (userOrder.length !== POEM_LINES.length) {
+      alert('还没选完呢，要把8句都选上！');
+      return;
+    }
+    const correct = userOrder.every((line, i) => line === POEM_LINES[i]);
+    if (correct) {
+      document.getElementById('reciteArea').style.display = 'none';
+      document.getElementById('reciteResult').style.display = 'block';
+      celebrate();
+    } else {
+      alert('顺序不对哦，再试试！提示：先看诗的顺序，再点击。');
+    }
+  }
+
+  function celebrate() {
+    for (let i = 0; i < 25; i++) {
+      const flower = document.createElement('div');
+      flower.textContent = ['🌸','🍃','🌺','✨','💖','🍂'][Math.floor(Math.random()*6)];
+      flower.style.cssText = 'position:fixed; left:' + Math.random()*100 + 'vw; top:-50px; font-size:30px; z-index:9999; pointer-events:none;';
+      flower.animate([
+        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+        { transform: 'translateY(100vh) rotate(720deg)', opacity: 0 }
+      ], { duration: 3000, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' });
+      document.body.appendChild(flower);
+      setTimeout(() => flower.remove(), 3100);
+    }
+  }
+
+  // 初始化填空
+  resetFill();
+</script>
+</body>
+</html>
