@@ -60,16 +60,47 @@
     border-color: #00695c;
   }
 
-  /* 诗句显示 */
-  .poem-line {
-    font-size: 20px;
-    line-height: 2.2;
-    margin: 10px 0;
+  /* ===== 关键修改：带拼音的诗词行 ===== */
+  .poem-row {
+    padding: 14px 12px;
+    margin: 8px 0;
+    border-radius: 12px;
+    background: rgba(178,235,242,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
     text-align: center;
-    padding: 8px;
-    background: linear-gradient(90deg, transparent, rgba(178,235,242,0.3), transparent);
-    border-radius: 10px;
   }
+  .poem-row:active { transform: scale(0.98); }
+  .poem-row .hanzi {
+    font-size: 22px;
+    line-height: 1.6;
+    color: #263238;
+  }
+  .poem-row .pinyin {
+    font-size: 13px;
+    color: #78909c;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .poem-row.highlight {
+    background: linear-gradient(90deg, #fff59d, #ffe082);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(255,193,7,0.4);
+  }
+  .poem-row.highlight .hanzi {
+    color: #d84315;
+    font-weight: bold;
+  }
+  .poem-row.done {
+    background: #c8e6c9;
+    opacity: 0.7;
+  }
+  .poem-row.done .hanzi {
+    text-decoration: line-through;
+    color: #2e7d32;
+  }
+
   .poem-author {
     text-align: center;
     color: #546e7a;
@@ -87,6 +118,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s;
+    margin: 0 2px;
   }
   .blank.revealed {
     color: #37474f;
@@ -150,6 +182,8 @@
   .btn:active { transform: scale(0.97); background: #004d40; }
   .btn-secondary { background: #546e7a; }
   .btn-secondary:active { background: #37474f; }
+  .btn-warn { background: #ef6c00; }
+  .btn-warn:active { background: #e65100; }
 
   /* 图片说明 */
   .scene-card {
@@ -215,10 +249,42 @@
     color: #546e7a;
     font-size: 13px;
     margin-top: 10px;
+    line-height: 1.6;
   }
   .keyword {
     color: #d84315;
     font-weight: bold;
+  }
+
+  /* 跟读提示 */
+  .read-tip {
+    background: #fff3e0;
+    border: 2px dashed #ff9800;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 15px 0;
+    text-align: center;
+    color: #e65100;
+    font-size: 15px;
+    font-weight: bold;
+  }
+  .read-tip .big {
+    font-size: 22px;
+    display: block;
+    margin: 5px 0;
+  }
+
+  /* 填空时拼音也显示 */
+  .fill-line {
+    font-size: 18px;
+    line-height: 2.4;
+    margin: 6px 0;
+  }
+  .fill-pinyin {
+    font-size: 12px;
+    color: #90a4ae;
+    letter-spacing: 1px;
+    margin-bottom: -8px;
   }
 </style>
 </head>
@@ -238,18 +304,51 @@
 
   <!-- 1. 读诗 -->
   <div class="card" id="tab-read">
-    <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">读一读</h2>
-    <div class="poem-line">红藕香残玉簟秋，</div>
-    <div class="poem-line">轻解罗裳，独上兰舟。</div>
-    <div class="poem-line">云中谁寄锦书来？</div>
-    <div class="poem-line">雁字回时，月满西楼。</div>
-    <div class="poem-line">花自飘零水自流。</div>
-    <div class="poem-line">一种相思，两处闲愁。</div>
-    <div class="poem-line">此情无计可消除，</div>
-    <div class="poem-line">才下眉头，却上心头。</div>
+    <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">跟我读</h2>
+    <p class="hint" style="margin-bottom:15px;">💡 点哪句，哪句就变大变亮，请爸爸妈妈带着读</p>
+
+    <div class="read-tip" id="readTip">
+      <span class="big">👆 点一句开始</span>
+      跟着读三遍，再点下一句
+    </div>
+
+    <div class="poem-row" data-i="0">
+      <div class="hanzi">红藕香残玉簟秋，</div>
+      <div class="pinyin">hóng ǒu xiāng cán yù diàn qiū</div>
+    </div>
+    <div class="poem-row" data-i="1">
+      <div class="hanzi">轻解罗裳，独上兰舟。</div>
+      <div class="pinyin">qīng jiě luó cháng, dú shàng lán zhōu</div>
+    </div>
+    <div class="poem-row" data-i="2">
+      <div class="hanzi">云中谁寄锦书来？</div>
+      <div class="pinyin">yún zhōng shuí jì jǐn shū lái</div>
+    </div>
+    <div class="poem-row" data-i="3">
+      <div class="hanzi">雁字回时，月满西楼。</div>
+      <div class="pinyin">yàn zì huí shí, yuè mǎn xī lóu</div>
+    </div>
+    <div class="poem-row" data-i="4">
+      <div class="hanzi">花自飘零水自流。</div>
+      <div class="pinyin">huā zì piāo líng shuǐ zì liú</div>
+    </div>
+    <div class="poem-row" data-i="5">
+      <div class="hanzi">一种相思，两处闲愁。</div>
+      <div class="pinyin">yī zhǒng xiāng sī, liǎng chǔ xián chóu</div>
+    </div>
+    <div class="poem-row" data-i="6">
+      <div class="hanzi">此情无计可消除，</div>
+      <div class="pinyin">cǐ qíng wú jì kě xiāo chú</div>
+    </div>
+    <div class="poem-row" data-i="7">
+      <div class="hanzi">才下眉头，却上心头。</div>
+      <div class="pinyin">cái xià méi tóu, què shàng xīn tóu</div>
+    </div>
     <div class="poem-author">—— 李清照（宋）</div>
-    <button class="btn" onclick="speakPoem()">🔊 听老师读</button>
-    <p class="hint">点击"听老师读"，跟着读三遍</p>
+
+    <div class="progress"><div class="progress-bar" id="readProgress" style="width:0%"></div></div>
+    <p class="hint" id="readStatus">已读 0 / 8 句</p>
+    <button class="btn btn-warn" onclick="restartRead()">🔄 重新开始跟读</button>
   </div>
 
   <!-- 2. 填空 -->
@@ -257,15 +356,30 @@
     <h2 style="text-align:center; color:#00695c; margin-bottom:15px;">填一填</h2>
     <p class="hint" style="margin-bottom:15px;">从下面的字里点一个，填到空格里</p>
 
-    <div style="text-align:center; line-height:2.5; font-size:19px;">
-      <div>红<span class="blank" data-i="0">藕</span>香残<span class="blank" data-i="1">玉</span>簟秋，</div>
-      <div>轻解<span class="blank" data-i="2">罗</span>裳，独上<span class="blank" data-i="3">兰</span>舟。</div>
-      <div>云中谁寄<span class="blank" data-i="4">锦</span>书来？</div>
-      <div>雁字回时，月满西楼。</div>
-      <div>花自飘零水自流。</div>
-      <div>一种<span class="blank" data-i="5">相</span>思，两处<span class="blank" data-i="6">闲</span>愁。</div>
-      <div>此情无计可消除，</div>
-      <div>才下<span class="blank" data-i="7">眉</span>头，却上<span class="blank" data-i="8">心</span>头。</div>
+    <div style="text-align:center;">
+      <div class="fill-pinyin">hóng ǒu xiāng cán yù diàn qiū</div>
+      <div class="fill-line">红<span class="blank" data-i="0">　　</span>香残<span class="blank" data-i="1">　　</span>簟秋，</div>
+
+      <div class="fill-pinyin">qīng jiě luó cháng, dú shàng lán zhōu</div>
+      <div class="fill-line">轻解<span class="blank" data-i="2">　　</span>裳，独上<span class="blank" data-i="3">　　</span>舟。</div>
+
+      <div class="fill-pinyin">yún zhōng shuí jì jǐn shū lái</div>
+      <div class="fill-line">云中谁寄<span class="blank" data-i="4">　　</span>书来？</div>
+
+      <div class="fill-pinyin">yàn zì huí shí, yuè mǎn xī lóu</div>
+      <div class="fill-line" style="color:#90a4ae;">雁字回时，月满西楼。</div>
+
+      <div class="fill-pinyin">huā zì piāo líng shuǐ zì liú</div>
+      <div class="fill-line" style="color:#90a4ae;">花自飘零水自流。</div>
+
+      <div class="fill-pinyin">yī zhǒng xiāng sī, liǎng chǔ xián chóu</div>
+      <div class="fill-line">一种<span class="blank" data-i="5">　　</span>思，两处<span class="blank" data-i="6">　　</span>愁。</div>
+
+      <div class="fill-pinyin">cǐ qíng wú jì kě xiāo chú</div>
+      <div class="fill-line" style="color:#90a4ae;">此情无计可消除，</div>
+
+      <div class="fill-pinyin">cái xià méi tóu, què shàng xīn tóu</div>
+      <div class="fill-line">才下<span class="blank" data-i="7">　　</span>头，却上<span class="blank" data-i="8">　　</span>头。</div>
     </div>
 
     <div class="progress"><div class="progress-bar" id="fillProgress" style="width:0%"></div></div>
@@ -341,14 +455,38 @@
       <div class="celebrate">🎉🌸🎉</div>
       <h2 style="text-align:center; color:#00695c;">挑战成功！</h2>
       <p style="text-align:center; margin:15px 0;">你真棒！把整首词背下来了！</p>
-      <div class="poem-line">红藕香残玉簟秋，</div>
-      <div class="poem-line">轻解罗裳，独上兰舟。</div>
-      <div class="poem-line">云中谁寄锦书来？</div>
-      <div class="poem-line">雁字回时，月满西楼。</div>
-      <div class="poem-line">花自飘零水自流。</div>
-      <div class="poem-line">一种相思，两处闲愁。</div>
-      <div class="poem-line">此情无计可消除，</div>
-      <div class="poem-line">才下眉头，却上心头。</div>
+      <div class="poem-row done">
+        <div class="hanzi">红藕香残玉簟秋，</div>
+        <div class="pinyin">hóng ǒu xiāng cán yù diàn qiū</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">轻解罗裳，独上兰舟。</div>
+        <div class="pinyin">qīng jiě luó cháng, dú shàng lán zhōu</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">云中谁寄锦书来？</div>
+        <div class="pinyin">yún zhōng shuí jì jǐn shū lái</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">雁字回时，月满西楼。</div>
+        <div class="pinyin">yàn zì huí shí, yuè mǎn xī lóu</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">花自飘零水自流。</div>
+        <div class="pinyin">huā zì piāo líng shuǐ zì liú</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">一种相思，两处闲愁。</div>
+        <div class="pinyin">yī zhǒng xiāng sī, liǎng chǔ xián chóu</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">此情无计可消除，</div>
+        <div class="pinyin">cǐ qíng wú jì kě xiāo chú</div>
+      </div>
+      <div class="poem-row done">
+        <div class="hanzi">才下眉头，却上心头。</div>
+        <div class="pinyin">cái xià méi tóu, què shàng xīn tóu</div>
+      </div>
       <button class="btn" onclick="resetRecite()">🔄 再背一遍</button>
     </div>
   </div>
@@ -367,24 +505,56 @@
     if (name === 'fill') resetFill();
   }
 
-  // ===== 1. 朗读 =====
-  function speakPoem() {
-    if (!('speechSynthesis' in window)) {
-      alert('您的浏览器不支持朗读功能');
-      return;
+  // ===== 1. 跟我读（点击高亮，标记为已读） =====
+  let readDone = new Array(8).fill(false);
+
+  function initRead() {
+    document.querySelectorAll('#tab-read .poem-row').forEach((row, i) => {
+      row.onclick = () => {
+        // 取消其他高亮
+        document.querySelectorAll('#tab-read .poem-row').forEach(r => {
+          if (r !== row) r.classList.remove('highlight');
+        });
+        // 高亮当前
+        row.classList.toggle('highlight');
+        // 标记为已读
+        if (!readDone[i]) {
+          readDone[i] = true;
+          row.classList.add('done');
+          updateReadProgress();
+          // 自动滚动到下一句
+          setTimeout(() => {
+            if (i + 1 < 8) {
+              document.querySelectorAll('#tab-read .poem-row')[i+1].scrollIntoView({behavior:'smooth', block:'center'});
+            }
+          }, 800);
+        }
+      };
+    });
+  }
+
+  function updateReadProgress() {
+    const done = readDone.filter(x => x).length;
+    document.getElementById('readProgress').style.width = (done/8*100) + '%';
+    document.getElementById('readStatus').textContent = '已读 ' + done + ' / 8 句';
+
+    if (done === 8) {
+      document.getElementById('readTip').innerHTML = '<span class="big">🎉 全部跟读完成！</span>真棒！去"意思"看看这首词讲什么';
+      celebrate();
     }
-    const text = '红藕香残玉簟秋。轻解罗裳，独上兰舟。云中谁寄锦书来？雁字回时，月满西楼。花自飘零水自流。一种相思，两处闲愁。此情无计可消除，才下眉头，却上心头。';
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = 0.6;
-    u.pitch = 1.1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+  }
+
+  function restartRead() {
+    readDone = new Array(8).fill(false);
+    document.querySelectorAll('#tab-read .poem-row').forEach(row => {
+      row.classList.remove('done', 'highlight');
+    });
+    document.getElementById('readTip').innerHTML = '<span class="big">👆 点一句开始</span>跟着读三遍，再点下一句';
+    updateReadProgress();
   }
 
   // ===== 2. 填空 =====
   const FILL_ORDER = ['藕','玉','罗','兰','锦','相','闲','眉','心'];
-
   let fillAnswered = new Array(FILL_ORDER.length).fill(false);
 
   function buildCharPool() {
@@ -427,17 +597,16 @@
     document.getElementById('fillProgress').style.width = (done/FILL_ORDER.length*100) + '%';
 
     if (done === FILL_ORDER.length) {
-      setTimeout(() => alert('🎉 太棒了！全部填对！去"意思"看看这首词讲什么吧！'), 300);
+      setTimeout(() => alert('🎉 太棒了！全部填对！'), 300);
     }
   }
 
   function resetFill() {
     fillAnswered = new Array(FILL_ORDER.length).fill(false);
     const blanks = document.querySelectorAll('#tab-fill .blank');
-    blanks.forEach((b, i) => {
+    blanks.forEach(b => {
       b.textContent = '　　';
       b.classList.remove('revealed');
-      b.style.display = 'inline-block';
     });
     buildCharPool();
     updateFillScore();
@@ -513,7 +682,8 @@
     }
   }
 
-  // 初始化填空
+  // 初始化
+  initRead();
   resetFill();
 </script>
 </body>
