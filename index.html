@@ -314,7 +314,11 @@ function switchTab(name) {
 }
 
 function ttsUrl(i) {
-  return 'data:audio/mp3;base64,' + POEMS[cur].audio[i];
+  const audio = POEMS[cur].audio[i];
+  if (audio.startsWith('audio/')) {
+    return audio;
+  }
+  return 'data:audio/mp3;base64,' + audio;
 }
 
 function stopAudio() {
