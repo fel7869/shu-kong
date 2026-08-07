@@ -5,27 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>古诗背诵小课堂</title>
 <style>
-  * {{ margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }}
-  body {{
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
     font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
     background: linear-gradient(160deg, #e0f7fa 0%, #b2ebf2 40%, #ffe0b2 100%);
     min-height: 100vh;
     padding: 16px;
     color: #37474f;
-  }}
-  .container {{ max-width: 600px; margin: 0 auto; }}
+  }
+  .container { max-width: 600px; margin: 0 auto; }
 
-  #page-home .header {{
+  #page-home .header {
     text-align: center;
     padding: 24px 16px;
     background: rgba(255,255,255,0.75);
     border-radius: 20px;
     margin-bottom: 16px;
     box-shadow: 0 4px 15px rgba(0,150,136,0.3);
-  }}
-  #page-home .header h1 {{ font-size: 24px; color: #00695c; margin-bottom: 8px; }}
-  #page-home .header p {{ font-size: 14px; color: #546e7a; }}
-  .poem-card {{
+  }
+  #page-home .header h1 { font-size: 24px; color: #00695c; margin-bottom: 8px; }
+  #page-home .header p { font-size: 14px; color: #546e7a; }
+  .poem-card {
     background: white;
     border-radius: 18px;
     padding: 18px 20px;
@@ -37,16 +37,16 @@
     gap: 14px;
     transition: transform 0.15s;
     border-left: 6px solid #00897b;
-  }}
-  .poem-card:active {{ transform: scale(0.98); }}
-  .poem-card .big-emoji {{ font-size: 38px; }}
-  .poem-card .info {{ flex: 1; }}
-  .poem-card .info .t {{ font-size: 19px; font-weight: bold; color: #00695c; }}
-  .poem-card .info .a {{ font-size: 13px; color: #78909c; margin-top: 3px; }}
-  .poem-card .info .d {{ font-size: 13px; color: #546e7a; margin-top: 5px; line-height: 1.5; }}
-  .poem-card .arrow {{ font-size: 22px; color: #b0bec5; }}
+  }
+  .poem-card:active { transform: scale(0.98); }
+  .poem-card .big-emoji { font-size: 32px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: #e0f2f1; border-radius: 12px; }
+  .poem-card .info { flex: 1; }
+  .poem-card .info .t { font-size: 19px; font-weight: bold; color: #00695c; }
+  .poem-card .info .a { font-size: 13px; color: #78909c; margin-top: 3px; }
+  .poem-card .info .d { font-size: 13px; color: #546e7a; margin-top: 5px; line-height: 1.5; }
+  .poem-card .arrow { font-size: 22px; color: #b0bec5; }
 
-  .topbar {{
+  .topbar {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -55,106 +55,106 @@
     padding: 10px 14px;
     margin-bottom: 12px;
     box-shadow: 0 2px 10px rgba(0,150,136,0.2);
-  }}
-  .back-btn {{
+  }
+  .back-btn {
     background: #00695c; color: white; border: none;
     border-radius: 10px; padding: 8px 14px; font-size: 14px; cursor: pointer;
     white-space: nowrap;
-  }}
-  .back-btn:active {{ background: #004d40; }}
-  .topbar .t {{ font-size: 17px; font-weight: bold; color: #00695c; flex: 1; }}
-  .topbar .a {{ font-size: 12px; color: #78909c; }}
+  }
+  .back-btn:active { background: #004d40; }
+  .topbar .t { font-size: 17px; font-weight: bold; color: #00695c; flex: 1; }
+  .topbar .a { font-size: 12px; color: #78909c; }
 
-  .card {{
+  .card {
     background: white;
     border-radius: 18px;
     padding: 20px;
     margin-bottom: 16px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  }}
-  .tabs {{ display: flex; gap: 6px; margin-bottom: 14px; }}
-  .tab {{
+  }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab {
     flex: 1; padding: 11px 4px; text-align: center;
     background: rgba(255,255,255,0.7);
     border: 2px solid transparent; border-radius: 13px;
     font-size: 14px; cursor: pointer; transition: all 0.3s; white-space: nowrap;
-  }}
-  .tab.active {{ background: #00695c; color: white; border-color: #00695c; }}
+  }
+  .tab.active { background: #00695c; color: white; border-color: #00695c; }
 
-  .poem-row {{
+  .poem-row {
     padding: 11px 10px; margin: 7px 0; border-radius: 12px;
     background: rgba(178,235,242,0.15); transition: all 0.3s;
-  }}
-  .poem-row .hanzi {{ font-size: 21px; line-height: 1.6; color: #263238; text-align: center; }}
-  .poem-row .pinyin {{ font-size: 13px; color: #78909c; letter-spacing: 1px; margin-top: 3px; text-align: center; }}
-  .poem-row .audio-controls {{ display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 7px; }}
-  .poem-row .speaker-btn {{
+  }
+  .poem-row .hanzi { font-size: 21px; line-height: 1.6; color: #263238; text-align: center; }
+  .poem-row .pinyin { font-size: 13px; color: #78909c; letter-spacing: 1px; margin-top: 3px; text-align: center; }
+  .poem-row .audio-controls { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 7px; }
+  .poem-row .speaker-btn {
     background: linear-gradient(135deg, #ff7043, #f4511e); color: white; border: none;
     border-radius: 50%; width: 36px; height: 36px; font-size: 16px; cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 8px rgba(244,81,30,0.3);
-  }}
-  .poem-row .speaker-btn:active {{ transform: scale(0.9); }}
-  .poem-row .speaker-btn.playing {{ background: linear-gradient(135deg, #43a047, #2e7d32); animation: pulse 0.8s infinite; }}
-  @keyframes pulse {{
-    0%, 100% {{ transform: scale(1); box-shadow: 0 0 0 0 rgba(67,160,71,0.5); }}
-    50% {{ transform: scale(1.05); box-shadow: 0 0 0 10px rgba(67,160,71,0); }}
-  }}
+  }
+  .poem-row .speaker-btn:active { transform: scale(0.9); }
+  .poem-row .speaker-btn.playing { background: linear-gradient(135deg, #43a047, #2e7d32); animation: pulse 0.8s infinite; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(67,160,71,0.5); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(67,160,71,0); }
+  }
 
-  .audio-tip {{ background: #e3f2fd; border-radius: 10px; padding: 9px; margin: 10px 0; text-align: center; color: #1565c0; font-size: 12px; }}
-  .play-all-btn {{
+  .audio-tip { background: #e3f2fd; border-radius: 10px; padding: 9px; margin: 10px 0; text-align: center; color: #1565c0; font-size: 12px; }
+  .play-all-btn {
     background: linear-gradient(135deg, #00897b, #00695c); color: white; border: none;
     border-radius: 25px; padding: 12px 24px; font-size: 15px; cursor: pointer;
     display: flex; align-items: center; gap: 8px; margin: 15px auto;
     box-shadow: 0 4px 12px rgba(0,105,92,0.3);
-  }}
-  .play-all-btn:active {{ transform: scale(0.95); }}
-  .play-all-btn.playing {{ background: linear-gradient(135deg, #43a047, #2e7d32); }}
+  }
+  .play-all-btn:active { transform: scale(0.95); }
+  .play-all-btn.playing { background: linear-gradient(135deg, #43a047, #2e7d32); }
 
-  .fill-box {{ background: #f5f5f5; border-radius: 12px; padding: 15px; margin: 10px 0; }}
-  .fill-line {{ font-size: 20px; line-height: 2; text-align: center; margin: 8px 0; }}
-  .fill-blank {{
+  .fill-box { background: #f5f5f5; border-radius: 12px; padding: 15px; margin: 10px 0; }
+  .fill-line { font-size: 20px; line-height: 2; text-align: center; margin: 8px 0; }
+  .fill-blank {
     display: inline-block; min-width: 32px; height: 32px;
     border-bottom: 2px solid #00897b; margin: 0 3px;
     text-align: center; vertical-align: middle; color: #00695c; font-weight: bold;
-  }}
-  .char-pool {{ display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }}
-  .char-btn {{
+  }
+  .char-pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
+  .char-btn {
     width: 44px; height: 44px; font-size: 20px; background: white;
     border: 2px solid #b2dfdb; border-radius: 10px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s;
-  }}
-  .char-btn:active {{ background: #e0f2f1; transform: scale(0.9); }}
-  .char-btn.used {{ opacity: 0.3; pointer-events: none; }}
-  .fill-actions {{ display: flex; gap: 10px; justify-content: center; margin-top: 15px; }}
-  .fill-actions button {{
+  }
+  .char-btn:active { background: #e0f2f1; transform: scale(0.9); }
+  .char-btn.used { opacity: 0.3; pointer-events: none; }
+  .fill-actions { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+  .fill-actions button {
     padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px;
-  }}
-  .btn-primary {{ background: #00897b; color: white; }}
-  .btn-secondary {{ background: #eceff1; color: #546e7a; }}
+  }
+  .btn-primary { background: #00897b; color: white; }
+  .btn-secondary { background: #eceff1; color: #546e7a; }
 
-  .scene-card {{ background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius: 14px; padding: 15px; margin: 10px 0; }}
-  .scene-card .emoji {{ font-size: 32px; margin-bottom: 5px; }}
-  .scene-card h3 {{ font-size: 16px; color: #1565c0; margin-bottom: 5px; }}
-  .scene-card p {{ font-size: 13px; color: #37474f; line-height: 1.6; }}
-  .story-box {{ background: #fff8e1; border-radius: 12px; padding: 15px; margin-top: 15px; border-left: 4px solid #ffb300; }}
-  .story-box h4 {{ color: #f57c00; margin-bottom: 8px; font-size: 15px; }}
-  .story-box p {{ color: #5d4037; font-size: 14px; line-height: 1.7; }}
+  .scene-card { background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius: 14px; padding: 15px; margin: 10px 0; }
+  .scene-card .emoji { font-size: 24px; display: inline-block; margin-right: 8px; }
+  .scene-card h3 { font-size: 16px; color: #1565c0; margin-bottom: 5px; }
+  .scene-card p { font-size: 13px; color: #37474f; line-height: 1.6; }
+  .story-box { background: #fff8e1; border-radius: 12px; padding: 15px; margin-top: 15px; border-left: 4px solid #ffb300; }
+  .story-box h4 { color: #f57c00; margin-bottom: 8px; font-size: 15px; }
+  .story-box p { color: #5d4037; font-size: 14px; line-height: 1.7; }
 
-  .recite-area {{ background: #e8f5e9; border-radius: 12px; padding: 15px; margin: 10px 0; }}
-  .recite-line {{
+  .recite-area { background: #e8f5e9; border-radius: 12px; padding: 15px; margin: 10px 0; }
+  .recite-line {
     background: white; border-radius: 10px; padding: 12px; margin: 8px 0;
     cursor: pointer; text-align: center; font-size: 18px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  }}
-  .recite-line.selected {{ background: #c8e6c9; text-decoration: line-through; opacity: 0.6; }}
-  .recite-result {{ text-align: center; padding: 30px; }}
-  .recite-result h3 {{ color: #2e7d32; margin-bottom: 15px; }}
-  .success-emoji {{ font-size: 60px; margin: 20px 0; }}
+  }
+  .recite-line.selected { background: #c8e6c9; text-decoration: line-through; opacity: 0.6; }
+  .recite-result { text-align: center; padding: 30px; }
+  .recite-result h3 { color: #2e7d32; margin-bottom: 15px; }
+  .success-emoji { font-size: 60px; margin: 20px 0; }
 
-  .page {{ display: none; }}
-  .page.active {{ display: block; }}
+  .page { display: none; }
+  .page.active { display: block; }
 </style>
 </head>
 <body>
@@ -162,7 +162,7 @@
 
 <div id="page-home" class="page active">
   <div class="header">
-    <h1>📖 古诗背诵小课堂</h1>
+    <h1>[书] 古诗背诵小课堂</h1>
     <p>选一篇，开始今天的背诵吧</p>
   </div>
   <div id="poemList"></div>
@@ -170,22 +170,22 @@
 
 <div id="page-learn" class="page">
   <div class="topbar">
-    <button class="back-btn" onclick="goHome()">← 返回</button>
+    <button class="back-btn" onclick="goHome()">返回</button>
     <div class="t" id="learnTitle">标题</div>
     <div class="a" id="learnAuthor">作者</div>
   </div>
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('read')">📖 读诗</div>
-    <div class="tab" onclick="switchTab('fill')">✏️ 填空</div>
-    <div class="tab" onclick="switchTab('understand')">💡 意思</div>
-    <div class="tab" onclick="switchTab('recite')">🎯 背诵</div>
+    <div class="tab active" onclick="switchTab('read')">读诗</div>
+    <div class="tab" onclick="switchTab('fill')">填空</div>
+    <div class="tab" onclick="switchTab('understand')">意思</div>
+    <div class="tab" onclick="switchTab('recite')">背诵</div>
   </div>
 
   <div id="tab-read" class="tab-content">
     <div class="card">
       <div class="audio-tip">真人发音已内置，无需联网，任何手机都能听</div>
       <div id="readContent"></div>
-      <button class="play-all-btn" id="playAllBtn" onclick="playAll()">▶️ 一键朗读全篇</button>
+      <button class="play-all-btn" id="playAllBtn" onclick="playAll()">[播] 一键朗读全篇</button>
     </div>
   </div>
 
@@ -194,8 +194,8 @@
       <div id="fillContent"></div>
       <div class="char-pool" id="charPool"></div>
       <div class="fill-actions">
-        <button class="btn-secondary" onclick="resetFill()">🔄 重置</button>
-        <button class="btn-primary" onclick="checkFill()">✓ 检查答案</button>
+        <button class="btn-secondary" onclick="resetFill()">[重] 重置</button>
+        <button class="btn-primary" onclick="checkFill()">[对] 检查答案</button>
       </div>
     </div>
   </div>
@@ -204,7 +204,7 @@
     <div class="card">
       <div id="meaningContent"></div>
       <div class="story-box">
-        <h4>📚 背后的故事</h4>
+        <h4>[故] 背后的故事</h4>
         <p id="storyText"></p>
       </div>
     </div>
@@ -217,13 +217,13 @@
         <div id="reciteLines"></div>
       </div>
       <div class="recite-result" id="reciteResult" style="display:none">
-        <div class="success-emoji">🎉</div>
+        <div class="success-emoji">[庆]</div>
         <h3>太棒了！背诵成功！</h3>
         <div id="reciteFull"></div>
       </div>
       <div class="fill-actions">
-        <button class="btn-secondary" onclick="resetRecite()">🔄 重来</button>
-        <button class="btn-primary" onclick="checkRecite()">✓ 完成背诵</button>
+        <button class="btn-secondary" onclick="resetRecite()">[重] 重来</button>
+        <button class="btn-primary" onclick="checkRecite()">[完] 完成背诵</button>
       </div>
     </div>
   </div>
@@ -232,33 +232,79 @@
 </div>
 
 <script>
-window.POEMS = [{"id":"yj","title":"一剪梅·红藕香残玉簟秋","author":"李清照 · 宋","emoji":"🍃","desc":"想一个人的时候，连秋风都带着思念","lines":["红藕香残玉簟秋，", "轻解罗裳，独上兰舟。", "云中谁寄锦书来？", "雁字回时，月满西楼。", "花自飘零水自流。", "一种相思，两处闲愁。", "此情无计可消除，", "才下眉头，却上心头。"],"pinyin":["hóng ǒu xiāng cán yù diàn qiū", "qīng jiě luó cháng, dú shàng lán zhōu", "yún zhōng shuí jì jǐn shū lái", "yàn zì huí shí, yuè mǎn xī lóu", "huā zì piāo líng shuǐ zì liú", "yī zhǒng xiāng sī, liǎng chǔ xián chóu", "cǐ qíng wú jì kě xiāo chú", "cái xià méi tóu, què shàng xīn tóu"],"audio":["audio/p0_0.mp3", "audio/p0_1.mp3", "audio/p0_2.mp3", "audio/p0_3.mp3", "audio/p0_4.mp3", "audio/p0_5.mp3", "audio/p0_6.mp3", "audio/p0_7.mp3"],"fill_lines":[["hóng ǒu xiāng cán yù diàn qiū", "红{0}香残{1}簟秋，", [0, 1]], ["qīng jiě luó cháng, dú shàng lán zhōu", "轻解{2}裳，独上{3}舟。", [2, 3]], ["yún zhōng shuí jì jǐn shū lái", "云中谁寄{4}书来？", [4]], ["yàn zì huí shí, yuè mǎn xī lóu", "雁字回时，月满西楼。", []], ["huā zì piāo líng shuǐ zì liú", "花自飘零水自流。", []], ["yī zhǒng xiāng sī, liǎng chǔ xián chóu", "一种{5}思，两处{6}愁。", [5, 6]], ["cǐ qíng wú jì kě xiāo chú", "此情无计可消除，", []], ["cái xià méi tóu, què shàng xīn tóu", "才下{7}头，却上{8}头。", [7, 8]]],"fill_answers":["藕", "玉", "罗", "兰", "锦", "相", "闲", "眉", "心"],"fill_pool":["藕", "玉", "罗", "兰", "锦", "相", "闲", "眉", "心", "红", "秋", "舟", "雁", "花"],"meanings":[{"emoji": "🍂🪷", "title": "红藕香残玉簟秋", "text": "红藕=红色荷花；香残=香味快没了（秋天到了）；玉簟=像玉一样凉的竹席。<br><b>意思：</b>荷花快凋谢了，秋天来了，躺在凉凉的竹席上。"}, {"emoji": "⛵", "title": "轻解罗裳，独上兰舟", "text": "罗裳=丝绸外衣；兰舟=用木兰树做的小船。<br><b>意思：</b>她轻轻脱下外衣，独自一人坐上小船。"}, {"emoji": "✉️🦢", "title": "云中谁寄锦书来？雁字回时，月满西楼", "text": "锦书=很珍贵的信；雁字=大雁排成「人」字飞；西楼=她住的闺房。<br><b>意思：</b>天上有没有人给我寄信？大雁飞回来时，月光已经照满小楼。<br>她在<b>想她的丈夫</b>！"}, {"emoji": "🌸💧", "title": "花自飘零水自流", "text": "花儿自己飘落，水自己流走。<br>暗示美好的东西在慢慢消失（就像她想念的人不在身边）。"}, {"emoji": "💔", "title": "一种相思，两处闲愁", "text": "<b>同一种想念</b>，在<b>两个地方</b>让人发愁。<br>她在想丈夫，丈夫也一定在想她"}, {"emoji": "😟➡️❤️", "title": "此情无计可消除，才下眉头，却上心头", "text": "这种思念没办法去掉。<br>才从<b>眉头</b>（脸上）舒展开，<b>又</b>跑到了<b>心里</b>。<br>以为不皱眉就好了，结果心里还是想！"}],"story":"李清照和丈夫赵明诚分开后，非常想念他。望着大雁、看着月亮、独自泛舟，连眉头舒展了，心里还是放不下。"},{"id":"yh","title":"咏怀诗·其一","author":"阮籍 · 魏晋","emoji":"🌙","desc":"半夜睡不着，弹琴解忧——心里藏着说不出的愁","lines":["夜中不能寐，", "起坐弹鸣琴。", "薄帷鉴明月，", "清风吹我襟。", "孤鸿号外野，", "翔鸟鸣北林。", "徘徊将何见，", "忧思独伤心。"],"pinyin":["yè zhōng bù néng mèi, qǐ zuò tán míng qín", "báo wéi jiàn míng yuè, qīng fēng chuī wǒ jīn", "gū hóng háo wài yě, xiáng niǎo míng běi lín", "pái huái jiāng hé jiàn, yōu sī dú shāng xīn"],"audio":["audio/p1_0.mp3", "audio/p1_1.mp3", "audio/p1_2.mp3", "audio/p1_3.mp3", "audio/p1_4.mp3", "audio/p1_5.mp3", "audio/p1_6.mp3", "audio/p1_7.mp3"],"fill_lines":[["yè zhōng bù néng mèi", "夜中不能{0}，", [0]], ["qǐ zuò tán míng qín", "起坐弹鸣{1}。", [1]], ["báo wéi jiàn míng yuè", "薄{2}鉴明月，", [2]], ["qīng fēng chuī wǒ jīn", "清风吹我{3}。", [3]], ["gū hóng háo wài yě", "孤{4}号外野，", [4]], ["xiáng niǎo míng běi lín", "{5}鸟鸣北林。", [5]], ["pái huái jiāng hé jiàn", "徘徊将何见，", []], ["yōu sī dú shāng xīn", "忧思独伤{6}。", [6]]],"fill_answers":["寐", "琴", "帷", "襟", "鸿", "翔", "心"],"fill_pool":["寐", "琴", "帷", "襟", "鸿", "翔", "心", "夜", "风", "月", "林", "鸟", "鸣"],"meanings":[{"emoji": "🌃", "title": "夜中不能寐，起坐弹鸣琴", "text": "寐=睡觉。<br><b>意思：</b>半夜里睡不着，干脆起来弹琴。<br>心里有事，才睡不着。"}, {"emoji": "🌕", "title": "薄帷鉴明月，清风吹我襟", "text": "帷=窗帘；鉴=照；襟=衣襟。<br><b>意思：</b>淡淡的月光照进薄窗帘，清风吹动我的衣襟。<br>一个人，静静的夜。"}, {"emoji": "🕊️", "title": "孤鸿号外野，翔鸟鸣北林", "text": "鸿=大雁；号=哀叫；翔鸟=飞翔的鸟。<br><b>意思：</b>孤零零的大雁在野外哀叫，飞鸟在北边树林里鸣叫。<br>孤独的诗人，就像那只孤雁。"}, {"emoji": "😔", "title": "徘徊将何见，忧思独伤心", "text": "徘徊=走来走去；将=将要；何见=看见什么。<br><b>意思：</b>走来走去能看见什么呢？满心忧愁，独自伤心。<br>阮籍生活在乱世，有才华却不敢施展，只能借诗吐露心事。"}],"story":"阮籍是魏晋时期的诗人，生活在很乱的年代。他心中有苦闷不敢直说，就写了这首诗：半夜睡不着、弹琴、看月亮、听孤雁叫——其实都是在说：我心里很孤独、很忧愁。"},{"id":"yy","title":"鱼我所欲也（节选）","author":"孟子 · 先秦","emoji":"🐟","desc":"鱼和熊掌不可兼得——舍生取义，做有骨气的人","lines":["鱼，我所欲也；熊掌，亦我所欲也。", "二者不可得兼，舍鱼而取熊掌者也。", "生，亦我所欲也；义，亦我所欲也。", "二者不可得兼，舍生而取义者也。"],"pinyin":["yú, wǒ suǒ yù yě; xióng zhǎng, yì wǒ suǒ yù yě", "èr zhě bù kě dé jiān, shě yú ér qǔ xióng zhǎng zhě yě", "shēng, yì wǒ suǒ yù yě; yì, yì wǒ suǒ yù yě", "èr zhě bù kě dé jiān, shě shēng ér qǔ yì zhě yě"],"audio":["audio/p2_0.mp3", "audio/p2_1.mp3", "audio/p2_2.mp3", "audio/p2_3.mp3"],"fill_lines":[["yú, wǒ suǒ yù yě", "{0}，我所欲也；{1}掌，亦我所欲也。", [0, 1]], ["èr zhě bù kě dé jiān", "二者不可得{2}，舍鱼而取{3}掌者也。", [2, 3]], ["shēng, yì wǒ suǒ yù yě", "{4}，亦我所欲也；{5}，亦我所欲也。", [4, 5]], ["shě shēng ér qǔ yì", "二者不可得兼，舍{6}而取{7}者也。", [6, 7]]],"fill_answers":["鱼", "熊", "兼", "熊", "生", "义", "生", "义"],"fill_pool":["鱼", "熊", "兼", "生", "义", "欲", "舍", "取", "得"],"meanings":[{"emoji": "🐟🐻", "title": "鱼，我所欲也；熊掌，亦我所欲也", "text": "欲=想要；熊掌=熊的脚掌（古代珍贵食材）。<br><b>意思：</b>鱼是我想要的；熊掌也是我想要的。<br>两样都是好东西。"}, {"emoji": "⚖️", "title": "二者不可得兼，舍鱼而取熊掌者也", "text": "得兼=同时拥有；舍=放弃。<br><b>意思：</b>两样不能同时拥有，那就放弃鱼，选择熊掌。<br>💡 熊掌比鱼更珍贵，所以选熊掌。"}, {"emoji": "❤️⚔️", "title": "生，亦我所欲也；义，亦我所欲也", "text": "生=生命；义=正义、道义。<br><b>意思：</b>生命是我想要的；正义也是我想要的。<br>两样都重要！"}, {"emoji": "💪", "title": "二者不可得兼，舍生而取义者也", "text": "<b>意思：</b>如果只能选一个，那就放弃生命，选择正义！<br>💡 这就是著名的<b>「舍生取义」</b>——为了做对的事，连命都可以不要。"}],"story":"孟子用鱼和熊掌打比方：两样好东西只能选一个，当然选更珍贵的熊掌。然后他说：生命和正义也一样——如果只能选一个，真正的君子会选择正义！这就是「舍生取义」的由来，意思是做人要有骨气，不能为了活命就做坏事。"},{"id":"hhl","title":"黄鹤楼","author":"崔颢 · 唐","emoji":"🏯","desc":"登楼望远，思乡怀古——千古名篇","lines":["昔人已乘黄鹤去，", "此地空余黄鹤楼。", "黄鹤一去不复返，", "白云千载空悠悠。", "晴川历历汉阳树，", "芳草萋萋鹦鹉洲。", "日暮乡关何处是？", "烟波江上使人愁。"],"pinyin":["xī rén yǐ chéng huáng hè qù", "cǐ dì kōng yú huáng hè lóu", "huáng hè yī qù bù fù fǎn", "bái yún qiān zǎi kōng yōu yōu", "qíng chuān lì lì hàn yáng shù", "fāng cǎo qī qī yīng wǔ zhōu", "rì mù xiāng guān hé chù shì", "yān bō jiāng shàng shǐ rén chóu"],"audio":["audio/p3_0.mp3", "audio/p3_1.mp3", "audio/p3_2.mp3", "audio/p3_3.mp3", "audio/p3_4.mp3", "audio/p3_5.mp3", "audio/p3_6.mp3", "audio/p3_7.mp3"],"fill_lines":[["xī rén yǐ chéng huáng hè qù", "{0}人已乘黄鹤{1}，", [0, 1]], ["cǐ dì kōng yú huáng hè lóu", "此地空余{2}鹤楼。", [2]], ["huáng hè yī qù bù fù fǎn", "{3}鹤一去不复返，", [3]], ["bái yún qiān zǎi kōng yōu yōu", "白云千载空{4}{4}。", [4]], ["qíng chuān lì lì hàn yáng shù", "晴川历历{5}阳树，", [5]], ["fāng cǎo qī qī yīng wǔ zhōu", "芳草萋萋{6}{6}洲。", [6, 6]], ["rì mù xiāng guān hé chù shì", "日暮{7}关何处是？", [7]], ["yān bō jiāng shàng shǐ rén chóu", "烟波江上使人{8}。", [8]]],"fill_answers":["昔", "去", "黄", "黄", "悠", "汉", "鹦", "鹉", "乡", "愁"],"fill_pool":["昔", "去", "黄", "悠", "汉", "鹦", "鹉", "乡", "愁", "人", "地", "云", "川", "草"],"meanings":[{"emoji": "🦅", "title": "昔人已乘黄鹤去，此地空余黄鹤楼", "text": "昔人=古代的仙人；黄鹤=传说中的神鸟。<br><b>意思：</b>古代的仙人已经骑着黄鹤飞走了，这里只留下一座黄鹤楼。<br>传说三国时费祎在此乘鹤登仙。"}, {"emoji": "☁️", "title": "黄鹤一去不复返，白云千载空悠悠", "text": "千载=千年；悠悠=飘荡的样子。<br><b>意思：</b>黄鹤飞走后再也没有回来，只有白云千年来一直飘荡。<br>感叹时光流逝，物是人非。"}, {"emoji": "🌳", "title": "晴川历历汉阳树，芳草萋萋鹦鹉洲", "text": "晴川=阳光照耀的江面；历历=清晰可见；萋萋=草木茂盛。<br><b>意思：</b>阳光下汉阳的树木清晰可见，鹦鹉洲上芳草茂盛。<br>这是写景名句，对仗工整！"}, {"emoji": "🌅", "title": "日暮乡关何处是？烟波江上使人愁", "text": "乡关=故乡；烟波=烟雾笼罩的江面。<br><b>意思：</b>太阳落山了，我的故乡在哪里呢？看着江上烟波，让人忧愁。<br>诗人登楼思乡，感慨万千。"}],"story":"崔颢是唐代诗人，他登上黄鹤楼，想到传说中的仙人已去，楼空人非。望着远处的汉阳树、鹦鹉洲，夕阳西下，他不禁思念起故乡。这首诗被誉为'唐人七律第一'，连李白都赞叹不已！"},{"id":"zbz","title":"自暴者（节选）","author":"孟子 · 战国","emoji":"📜","desc":"自暴自弃的人，无法成就大事","lines":["自暴者，不可与有言也；", "自弃者，不可与有为也。", "言非礼义，谓之自暴也；", "吾身不能居仁由义，谓之自弃也。"],"pinyin":["zì bào zhě, bù kě yǔ yǒu yán yě", "zì qì zhě, bù kě yǔ yǒu wéi yě", "yán fēi lǐ yì, wèi zhī zì bào yě", "wú shēn bù néng jū rén yóu yì, wèi zhī zì qì yě"],"audio":["audio/p4_0.mp3", "audio/p4_1.mp3", "audio/p4_2.mp3", "audio/p4_3.mp3"],"fill_lines":[["zì bào zhě, bù kě yǔ yǒu yán yě", "{0}暴者，不可与有{1}也；", [0, 1]], ["zì qì zhě, bù kě yǔ yǒu wéi yě", "自{2}者，不可与有{3}也。", [2, 3]], ["yán fēi lǐ yì, wèi zhī zì bào yě", "言非{4}义，谓之自暴也；", [4]], ["wú shēn bù néng jū rén yóu yì", "吾身不能{5}仁由义，谓之自{6}也。", [5, 6]]],"fill_answers":["自", "言", "弃", "为", "礼", "居", "弃"],"fill_pool":["自", "言", "弃", "为", "礼", "居", "暴", "可", "与", "吾", "身"],"meanings":[{"emoji": "🙊", "title": "自暴者，不可与有言也", "text": "暴=糟蹋、损害；言=说话、交流。<br><b>意思：</b>自己糟蹋自己的人，没法和他好好说话。<br>因为他不讲道理。"}, {"emoji": "🚫", "title": "自弃者，不可与有为也", "text": "弃=放弃；为=作为、做事。<br><b>意思：</b>自己放弃自己的人，没法和他一起做事。<br>因为他没有上进心。"}, {"emoji": "🗣️", "title": "言非礼义，谓之自暴也", "text": "礼义=礼仪和道义。<br><b>意思：</b>说话不合礼义，就叫做'自暴'。<br>自己破坏自己的品德。"}, {"emoji": "💪", "title": "吾身不能居仁由义，谓之自弃也", "text": "居仁=心存仁爱；由义=遵循道义。<br><b>意思：</b>说自己不能做到仁爱和道义，就叫做'自弃'。<br>这是给自己找借口，放弃努力！"}],"story":"孟子是战国时期的大思想家。这段话里，他解释了什么叫'自暴自弃'：说话不讲礼义，是自暴；说自己做不到仁义，是自弃。孟子告诉我们：人要有志气，不能自己放弃自己！"}];
+window.POEMS = [
+  {
+    "id": "yj",
+    "title": "一剪梅·红藕香残玉簟秋",
+    "author": "李清照 · 宋",
+    "emoji": "秋",
+    "desc": "想一个人的时候，连秋风都带着思念",
+    "lines": ["红藕香残玉簟秋，", "轻解罗裳，独上兰舟。", "云中谁寄锦书来？", "雁字回时，月满西楼。", "花自飘零水自流。", "一种相思，两处闲愁。", "此情无计可消除，", "才下眉头，却上心头。"],
+    "pinyin": ["hóng ǒu xiāng cán yù diàn qiū", "qīng jiě luó cháng, dú shàng lán zhōu", "yún zhōng shuí jì jǐn shū lái", "yàn zì huí shí, yuè mǎn xī lóu", "huā zì piāo líng shuǐ zì liú", "yī zhǒng xiāng sī, liǎng chǔ xián chóu", "cǐ qíng wú jì kě xiāo chú", "cái xià méi tóu, què shàng xīn tóu"],
+    "audio": ["audio/p0_0.mp3", "audio/p0_1.mp3", "audio/p0_2.mp3", "audio/p0_3.mp3", "audio/p0_4.mp3", "audio/p0_5.mp3", "audio/p0_6.mp3", "audio/p0_7.mp3"],
+    "fill_lines": [["hóng ǒu xiāng cán yù diàn qiū", "红{0}香残{1}簟秋，", [0, 1]], ["qīng jiě luó cháng, dú shàng lán zhōu", "轻解{2}裳，独上{3}舟。", [2, 3]], ["yún zhōng shuí jì jǐn shū lái", "云中谁寄{4}书来？", [4]], ["yàn zì huí shí, yuè mǎn xī lóu", "雁字回时，月满西楼。", []], ["huā zì piāo líng shuǐ zì liú", "花自飘零水自流。", []], ["yī zhǒng xiāng sī, liǎng chǔ xián chóu", "一种{5}思，两处{6}愁。", [5, 6]], ["cǐ qíng wú jì kě xiāo chú", "此情无计可消除，", []], ["cái xià méi tóu, què shàng xīn tóu", "才下{7}头，却上{8}头。", [7, 8]]],
+    "fill_answers": ["藕", "玉", "罗", "兰", "锦", "相", "闲", "眉", "心"],
+    "fill_pool": ["藕", "玉", "罗", "兰", "锦", "相", "闲", "眉", "心", "红", "秋", "舟", "雁", "花"],
+    "meanings": [{"emoji": "荷", "title": "红藕香残玉簟秋", "text": "红藕=红色荷花；香残=香味快没了（秋天到了）；玉簟=像玉一样凉的竹席。<br><b>意思：</b>荷花快凋谢了，秋天来了，躺在凉凉的竹席上。"}, {"emoji": "舟", "title": "轻解罗裳，独上兰舟", "text": "罗裳=丝绸外衣；兰舟=用木兰树做的小船。<br><b>意思：</b>她轻轻脱下外衣，独自一人坐上小船。"}, {"emoji": "雁", "title": "云中谁寄锦书来？雁字回时，月满西楼", "text": "锦书=很珍贵的信；雁字=大雁排成「人」字飞；西楼=她住的闺房。<br><b>意思：</b>天上有没有人给我寄信？大雁飞回来时，月光已经照满小楼。<br>她在<b>想她的丈夫</b>！"}, {"emoji": "花", "title": "花自飘零水自流", "text": "花儿自己飘落，水自己流走。<br>暗示美好的东西在慢慢消失（就像她想念的人不在身边）。"}, {"emoji": "思", "title": "一种相思，两处闲愁", "text": "<b>同一种想念</b>，在<b>两个地方</b>让人发愁。<br>她在想丈夫，丈夫也一定在想她"}, {"emoji": "愁", "title": "此情无计可消除，才下眉头，却上心头", "text": "这种思念没办法去掉。<br>才从<b>眉头</b>（脸上）舒展开，<b>又</b>跑到了<b>心里</b>。<br>以为不皱眉就好了，结果心里还是想！"}],
+    "story": "李清照和丈夫赵明诚分开后，非常想念他。望着大雁、看着月亮、独自泛舟，连眉头舒展了，心里还是放不下。"
+  },
+  {
+    "id": "yh",
+    "title": "咏怀诗·其一",
+    "author": "阮籍 · 魏晋",
+    "emoji": "月",
+    "desc": "半夜睡不着，弹琴解忧——心里藏着说不出的愁",
+    "lines": ["夜中不能寐，", "起坐弹鸣琴。", "薄帷鉴明月，", "清风吹我襟。", "孤鸿号外野，", "翔鸟鸣北林。", "徘徊将何见，", "忧思独伤心。"],
+    "pinyin": ["yè zhōng bù néng mèi, qǐ zuò tán míng qín", "báo wéi jiàn míng yuè, qīng fēng chuī wǒ jīn", "gū hóng háo wài yě, xiáng niǎo míng běi lín", "pái huái jiāng hé jiàn, yōu sī dú shāng xīn"],
+    "audio": ["audio/p1_0.mp3", "audio/p1_1.mp3", "audio/p1_2.mp3", "audio/p1_3.mp3", "audio/p1_4.mp3", "audio/p1_5.mp3", "audio/p1_6.mp3", "audio/p1_7.mp3"],
+    "fill_lines": [["yè zhōng bù néng mèi", "夜中不能{0}，", [0]], ["qǐ zuò tán míng qín", "起坐弹鸣{1}。", [1]], ["báo wéi jiàn míng yuè", "薄{2}鉴明月，", [2]], ["qīng fēng chuī wǒ jīn", "清风吹我{3}。", [3]], ["gū hóng háo wài yě", "孤{4}号外野，", [4]], ["xiáng niǎo míng běi lín", "{5}鸟鸣北林。", [5]], ["pái huái jiāng hé jiàn", "徘徊将何见，", []], ["yōu sī dú shāng xīn", "忧思独伤{6}。", [6]]],
+    "fill_answers": ["寐", "琴", "帷", "襟", "鸿", "翔", "心"],
+    "fill_pool": ["寐", "琴", "帷", "襟", "鸿", "翔", "心", "夜", "风", "月", "林", "鸟", "鸣"],
+    "meanings": [{"emoji": "夜", "title": "夜中不能寐，起坐弹鸣琴", "text": "寐=睡觉。<br><b>意思：</b>半夜里睡不着，干脆起来弹琴。<br>心里有事，才睡不着。"}, {"emoji": "月", "title": "薄帷鉴明月，清风吹我襟", "text": "帷=窗帘；鉴=照；襟=衣襟。<br><b>意思：</b>淡淡的月光照进薄窗帘，清风吹动我的衣襟。<br>一个人，静静的夜。"}, {"emoji": "鸿", "title": "孤鸿号外野，翔鸟鸣北林", "text": "鸿=大雁；号=哀叫；翔鸟=飞翔的鸟。<br><b>意思：</b>孤零零的大雁在野外哀叫，飞鸟在北边树林里鸣叫。<br>孤独的诗人，就像那只孤雁。"}, {"emoji": "愁", "title": "徘徊将何见，忧思独伤心", "text": "徘徊=走来走去；将=将要；何见=看见什么。<br><b>意思：</b>走来走去能看见什么呢？满心忧愁，独自伤心。<br>阮籍生活在乱世，有才华却不敢施展，只能借诗吐露心事。"}],
+    "story": "阮籍是魏晋时期的诗人，生活在很乱的年代。他心中有苦闷不敢直说，就写了这首诗：半夜睡不着、弹琴、看月亮、听孤雁叫——其实都是在说：我心里很孤独、很忧愁。"
+  },
+  {
+    "id": "yy",
+    "title": "鱼我所欲也（节选）",
+    "author": "孟子 · 先秦",
+    "emoji": "义",
+    "desc": "鱼和熊掌不可兼得——舍生取义，做有骨气的人",
+    "lines": ["鱼，我所欲也；熊掌，亦我所欲也。", "二者不可得兼，舍鱼而取熊掌者也。", "生，亦我所欲也；义，亦我所欲也。", "二者不可得兼，舍生而取义者也。"],
+    "pinyin": ["yú, wǒ suǒ yù yě; xióng zhǎng, yì wǒ suǒ yù yě", "èr zhě bù kě dé jiān, shě yú ér qǔ xióng zhǎng zhě yě", "shēng, yì wǒ suǒ yù yě; yì, yì wǒ suǒ yù yě", "èr zhě bù kě dé jiān, shě shēng ér qǔ yì zhě yě"],
+    "audio": ["audio/p2_0.mp3", "audio/p2_1.mp3", "audio/p2_2.mp3", "audio/p2_3.mp3"],
+    "fill_lines": [["yú, wǒ suǒ yù yě", "{0}，我所欲也；{1}掌，亦我所欲也。", [0, 1]], ["èr zhě bù kě dé jiān", "二者不可得{2}，舍鱼而取{3}掌者也。", [2, 3]], ["shēng, yì wǒ suǒ yù yě", "{4}，亦我所欲也；{5}，亦我所欲也。", [4, 5]], ["shě shēng ér qǔ yì", "二者不可得兼，舍{6}而取{7}者也。", [6, 7]]],
+    "fill_answers": ["鱼", "熊", "兼", "熊", "生", "义", "生", "义"],
+    "fill_pool": ["鱼", "熊", "兼", "生", "义", "欲", "舍", "取", "得"],
+    "meanings": [{"emoji": "鱼", "title": "鱼，我所欲也；熊掌，亦我所欲也", "text": "欲=想要；熊掌=熊的脚掌（古代珍贵食材）。<br><b>意思：</b>鱼是我想要的；熊掌也是我想要的。<br>两样都是好东西。"}, {"emoji": "衡", "title": "二者不可得兼，舍鱼而取熊掌者也", "text": "得兼=同时拥有；舍=放弃。<br><b>意思：</b>两样不能同时拥有，那就放弃鱼，选择熊掌。<br>熊掌比鱼更珍贵，所以选熊掌。"}, {"emoji": "生", "title": "生，亦我所欲也；义，亦我所欲也", "text": "生=生命；义=正义、道义。<br><b>意思：</b>生命是我想要的；正义也是我想要的。<br>两样都重要！"}, {"emoji": "义", "title": "二者不可得兼，舍生而取义者也", "text": "<b>意思：</b>如果只能选一个，那就放弃生命，选择正义！<br>这就是著名的<b>「舍生取义」</b>——为了做对的事，连命都可以不要。"}],
+    "story": "孟子用鱼和熊掌打比方：两样好东西只能选一个，当然选更珍贵的熊掌。然后他说：生命和正义也一样——如果只能选一个，真正的君子会选择正义！这就是「舍生取义」的由来，意思是做人要有骨气，不能为了活命就做坏事。"
+  }
+];
 
 let cur = 0;
 let audioObj = null;
 let isPlayingAll = false;
 let userOrder = [];
 
-function ttsUrl(i) {{
+function ttsUrl(i) {
   const audio = POEMS[cur].audio[i];
-  if (audio.startsWith('audio/')) {{
+  if (audio.startsWith('audio/')) {
     return audio;
-  }}
+  }
   return 'data:audio/mp3;base64,' + audio;
-}}
+}
 
-function stopAudio() {{
-  if (audioObj) {{ audioObj.pause(); audioObj.currentTime = 0; }}
+function stopAudio() {
+  if (audioObj) { audioObj.pause(); audioObj.currentTime = 0; }
   document.querySelectorAll('.speaker-btn').forEach(b => b.classList.remove('playing'));
   const btn = document.getElementById('playAllBtn');
-  if (btn) {{
+  if (btn) {
     btn.classList.remove('playing');
-    btn.innerHTML = '▶️ 一键朗读全篇';
-  }}
+    btn.innerHTML = '[播] 一键朗读全篇';
+  }
   isPlayingAll = false;
-}}
+}
 
-function renderHome() {{
+function renderHome() {
   const list = document.getElementById('poemList');
   list.innerHTML = POEMS.map((p, i) => `
     <div class="poem-card" onclick="startLearn(${i})">
@@ -268,12 +314,12 @@ function renderHome() {{
         <div class="a">${p.author}</div>
         <div class="d">${p.desc}</div>
       </div>
-      <div class="arrow">›</div>
+      <div class="arrow">></div>
     </div>
   `).join('');
-}}
+}
 
-function startLearn(idx) {{
+function startLearn(idx) {
   cur = idx;
   const p = POEMS[idx];
   document.getElementById('learnTitle').textContent = p.title;
@@ -286,25 +332,25 @@ function startLearn(idx) {{
   resetRecite();
   document.getElementById('page-home').classList.remove('active');
   document.getElementById('page-learn').classList.add('active');
-}}
+}
 
-function goHome() {{
+function goHome() {
   stopAudio();
   document.getElementById('page-learn').classList.remove('active');
   document.getElementById('page-home').classList.add('active');
-}}
+}
 
-function switchTab(name) {{
+function switchTab(name) {
   stopAudio();
   document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
   document.getElementById('tab-' + name).style.display = 'block';
-  document.querySelectorAll('.tab').forEach((tab, i) => {{
+  document.querySelectorAll('.tab').forEach((tab, i) => {
     tab.classList.toggle('active', ['read','fill','understand','recite'][i] === name);
-  }});
+  });
   if (name === 'recite') resetRecite();
-}}
+}
 
-function renderRead() {{
+function renderRead() {
   const p = POEMS[cur];
   const container = document.getElementById('readContent');
   container.innerHTML = p.lines.map((line, i) => `
@@ -312,199 +358,199 @@ function renderRead() {{
       <div class="hanzi">${line}</div>
       <div class="pinyin">${p.pinyin[i] || p.pinyin[0]}</div>
       <div class="audio-controls">
-        <button class="speaker-btn" onclick="playLine(${i}, this)" title="听这句">🔊</button>
+        <button class="speaker-btn" onclick="playLine(${i}, this)" title="听这句">[音]</button>
       </div>
     </div>
   `).join('');
-}}
+}
 
-function playLine(idx, btn) {{
+function playLine(idx, btn) {
   stopAudio();
   btn.classList.add('playing');
   audioObj = new Audio(ttsUrl(idx));
-  audioObj.onended = () => {{
+  audioObj.onended = () => {
     btn.classList.remove('playing');
     if (isPlayingAll) playNext(idx);
-  }};
-  audioObj.onerror = () => {{ btn.classList.remove('playing'); alert('该句音频加载失败'); }};
-  audioObj.play().catch(err => {{ btn.classList.remove('playing'); console.error(err); }});
-}}
+  };
+  audioObj.onerror = () => { btn.classList.remove('playing'); alert('该句音频加载失败'); };
+  audioObj.play().catch(err => { btn.classList.remove('playing'); console.error(err); });
+}
 
-function playAll() {{
-  if (isPlayingAll) {{
+function playAll() {
+  if (isPlayingAll) {
     stopAudio();
     return;
-  }}
+  }
   isPlayingAll = true;
   const btn = document.getElementById('playAllBtn');
   btn.classList.add('playing');
-  btn.innerHTML = '⏹️ 停止朗读';
+  btn.innerHTML = '[停] 停止朗读';
   playNext(-1);
-}}
+}
 
-function playNext(prevIdx) {{
+function playNext(prevIdx) {
   const p = POEMS[cur];
   const nextIdx = prevIdx + 1;
-  if (nextIdx >= p.lines.length) {{
+  if (nextIdx >= p.lines.length) {
     stopAudio();
     return;
-  }}
+  }
   const btns = document.querySelectorAll('.speaker-btn');
   if (btns[nextIdx]) btns[nextIdx].classList.add('playing');
   audioObj = new Audio(ttsUrl(nextIdx));
-  audioObj.onended = () => {{
+  audioObj.onended = () => {
     if (btns[nextIdx]) btns[nextIdx].classList.remove('playing');
     playNext(nextIdx);
-  }};
-  audioObj.onerror = () => {{ stopAudio(); alert('朗读加载失败'); }};
-  audioObj.play().catch(err => {{ console.error(err); stopAudio(); }});
-}}
+  };
+  audioObj.onerror = () => { stopAudio(); alert('朗读加载失败'); };
+  audioObj.play().catch(err => { console.error(err); stopAudio(); });
+}
 
 let fillAnswers = [];
 let fillBlanks = [];
 
-function renderFill() {{
+function renderFill() {
   const p = POEMS[cur];
   fillAnswers = [];
   const container = document.getElementById('fillContent');
-  container.innerHTML = '<div class="fill-box">' + p.fill_lines.map((item, lineIdx) => {{
+  container.innerHTML = '<div class="fill-box">' + p.fill_lines.map((item, lineIdx) => {
     const [py, template, indices] = item;
     let html = '<div class="fill-line">';
     let partIdx = 0;
-    template.split(/\{(\d+)\}/).forEach((part, i) => {{
-      if (i % 2 === 0) {{
+    template.split(/\{(\d+)\}/).forEach((part, i) => {
+      if (i % 2 === 0) {
         html += part;
-      }} else {{
+      } else {
         html += `<span class="fill-blank" data-line="${lineIdx}" data-idx="${partIdx++}"></span>`;
-      }}
-    }});
+      }
+    });
     html += '</div>';
     return html;
-  }}).join('') + '</div>';
+  }).join('') + '</div>';
 
   fillBlanks = Array.from(document.querySelectorAll('.fill-blank'));
   renderCharPool();
-}}
+}
 
-function renderCharPool() {{
+function renderCharPool() {
   const p = POEMS[cur];
   const pool = document.getElementById('charPool');
   pool.innerHTML = p.fill_pool.map((char, i) => `
     <div class="char-btn" data-char="${char}" onclick="selectChar('${char}', this)">${char}</div>
   `).join('');
-}}
+}
 
-function selectChar(char, btn) {{
+function selectChar(char, btn) {
   const empty = fillBlanks.find(b => !b.textContent);
-  if (empty) {{
+  if (empty) {
     empty.textContent = char;
     btn.classList.add('used');
-  }}
-}}
+  }
+}
 
-function resetFill() {{
+function resetFill() {
   fillBlanks.forEach(b => b.textContent = '');
   document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('used'));
-}}
+}
 
-function checkFill() {{
+function checkFill() {
   const p = POEMS[cur];
   let correct = 0, total = 0;
-  fillBlanks.forEach((blank, i) => {{
+  fillBlanks.forEach((blank, i) => {
     const expected = p.fill_answers[i];
     const actual = blank.textContent;
     total++;
-    if (actual === expected) {{
+    if (actual === expected) {
       correct++;
       blank.style.borderColor = '#4caf50';
-    }} else {{
+    } else {
       blank.style.borderColor = '#f44336';
-    }}
-  }});
-  if (correct === total) {{
-    alert('🎉 太棒了！全部正确！');
-  }} else {{
+    }
+  });
+  if (correct === total) {
+    alert('[庆] 太棒了！全部正确！');
+  } else {
     alert(`对了 ${correct}/${total} 个，再试试！`);
-  }}
+  }
   setTimeout(() => fillBlanks.forEach(b => b.style.borderColor = ''), 1500);
-}}
+}
 
-function renderUnderstand() {{
+function renderUnderstand() {
   const p = POEMS[cur];
   const box = document.getElementById('meaningContent');
   box.innerHTML = p.meanings.map(m => `
     <div class="scene-card">
-      <div class="emoji">${m.emoji}</div>
+      <span class="emoji">${m.emoji}</span>
       <h3>${m.title}</h3>
       <p>${m.text}</p>
     </div>
   `).join('');
   document.getElementById('storyText').textContent = p.story;
-}}
+}
 
-function resetRecite() {{
+function resetRecite() {
   document.getElementById('reciteArea').style.display = 'block';
   document.getElementById('reciteResult').style.display = 'none';
   userOrder = [];
   renderReciteLines();
-}}
+}
 
-function renderReciteLines() {{
+function renderReciteLines() {
   const p = POEMS[cur];
   const lines = [...p.lines];
   lines.sort(() => Math.random() - 0.5);
   const container = document.getElementById('reciteLines');
   container.innerHTML = '';
-  lines.forEach(line => {{
+  lines.forEach(line => {
     const div = document.createElement('div');
     div.textContent = line;
     div.className = 'recite-line';
-    div.onclick = () => {{
+    div.onclick = () => {
       if (userOrder.includes(line)) return;
       userOrder.push(line);
       div.classList.add('selected');
-    }};
+    };
     container.appendChild(div);
-  }});
-}}
+  });
+}
 
-function checkRecite() {{
+function checkRecite() {
   const p = POEMS[cur];
-  if (userOrder.length !== p.lines.length) {{
+  if (userOrder.length !== p.lines.length) {
     alert('还没选完呢，要把全部 ' + p.lines.length + ' 句都选上！');
     return;
-  }}
+  }
   const correct = userOrder.every((line, i) => line === p.lines[i]);
-  if (correct) {{
+  if (correct) {
     document.getElementById('reciteArea').style.display = 'none';
     document.getElementById('reciteResult').style.display = 'block';
     const full = document.getElementById('reciteFull');
     full.innerHTML = '';
-    p.lines.forEach((line, i) => {{
+    p.lines.forEach((line, i) => {
       const row = document.createElement('div');
       row.className = 'poem-row done';
       row.innerHTML = '<div class="hanzi">' + line + '</div><div class="pinyin">' + (p.pinyin[i] || p.pinyin[0]) + '</div>';
       full.appendChild(row);
-    }});
+    });
     celebrate();
-  }} else {{
+  } else {
     alert('顺序不对哦，再试试！');
-  }}
-}}
+  }
+}
 
-function celebrate() {{
-  for (let i = 0; i < 25; i++) {{
+function celebrate() {
+  for (let i = 0; i < 25; i++) {
     const f = document.createElement('div');
-    f.textContent = ['🌸','🍃','🌺','✨','💖','🍂','⭐'][Math.floor(Math.random()*7)];
+    f.textContent = ['花','叶','星','心','月','云','光'][Math.floor(Math.random()*7)];
     f.style.cssText = 'position:fixed; left:' + Math.random()*100 + 'vw; top:-50px; font-size:30px; z-index:9999; pointer-events:none;';
     f.animate([
-      {{ transform: 'translateY(0) rotate(0deg)', opacity: 1 }},
-      {{ transform: 'translateY(100vh) rotate(720deg)', opacity: 0 }}
-    ], {{ duration: 3000, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' }});
+      { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+      { transform: 'translateY(100vh) rotate(720deg)', opacity: 0 }
+    ], { duration: 3000, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' });
     document.body.appendChild(f);
     setTimeout(() => f.remove(), 3100);
-  }}
-}}
+  }
+}
 
 renderHome();
 </script>
